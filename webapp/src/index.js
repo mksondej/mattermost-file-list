@@ -21,6 +21,7 @@ export default class Plugin {
             />,
             () => store.dispatch(openRootModal()),
             'Files in channel',
+            'Files in channel'
         );
 
         registry.registerReducer(reducer);

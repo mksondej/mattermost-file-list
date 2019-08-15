@@ -9,6 +9,7 @@ import {
 import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES} from './action_types';
 import { getLoadedFiles } from './selectors';
 import { Client4 } from 'mattermost-redux/client';
+import { buildQueryString } from "mattermost-redux/utils/helpers";
 
 export const getPluginServerRoute = (state) => {
     const config = getConfig(state);
@@ -33,16 +34,21 @@ export const openRootModal = simpleAction(OPEN_ROOT_MODAL);
 export const closeRootModal = simpleAction(CLOSE_ROOT_MODAL);
 
 export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState) => {
+    //ensure list reset
+    dispatch({
+        type: LOAD_FILES,
+        payload: null
+    });
+
     const state = getState();
     const baseUrl = getPluginServerRoute(state);
     const channelId = getCurrentChannelId(state);
 
-
-    var urlParams = new URLSearchParams();
+    let url = baseUrl + "/files/channel/" + channelId;
     if(pageRequest)
-        Object.keys(pageRequest).forEach(k => urlParams.append(k, pageRequest[k]));
+        url += buildQueryString(pageRequest);
 
-    const response = await fetch(baseUrl + "/files/channel/" + channelId + "?" + urlParams.toString());
+    const response = await fetch(url);
     const responseObject = await response.json();
 
     dispatch({

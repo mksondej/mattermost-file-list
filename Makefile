@@ -113,13 +113,13 @@ endif
 ifneq ($(HAS_SERVER),)
 	mkdir -p dist/$(PLUGIN_ID)/server/dist;
 	cp -r server/dist/* dist/$(PLUGIN_ID)/server/dist/;
+	chmod -R a+x dist/$(PLUGIN_ID)/server/dist/
 endif
 ifneq ($(HAS_WEBAPP),)
 	mkdir -p dist/$(PLUGIN_ID)/webapp/dist;
 	cp -r webapp/dist/* dist/$(PLUGIN_ID)/webapp/dist/;
 endif
 	cd dist && tar -cvzf $(BUNDLE_NAME) $(PLUGIN_ID)
-
 	@echo plugin built at: dist/$(BUNDLE_NAME)
 
 ## Builds and bundles the plugin.

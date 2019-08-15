@@ -23,21 +23,21 @@ type ListPageRequest struct {
 func (p *ListPageRequest) FromQueryString(q *url.Values) {
 	var err error
 
-	if p.Page, err = strconv.Atoi(q.Get("page")); err != nil {
+	if p.Page, err = strconv.Atoi(q.Get("Page")); err != nil {
 		p.Page = 1
 	}
 
-	if p.PageSize, err = strconv.Atoi(q.Get("pageSize")); err != nil {
+	if p.PageSize, err = strconv.Atoi(q.Get("PageSize")); err != nil {
 		p.PageSize = 10
 	}
 
-	p.OrderBy = q.Get("orderBy")
+	p.OrderBy = q.Get("OrderBy")
 
-	if p.PageSize, err = strconv.Atoi(q.Get("pageSize")); err != nil {
+	if p.PageSize, err = strconv.Atoi(q.Get("PageSize")); err != nil {
 		p.PageSize = 10
 	}
 
-	if dir, err := strconv.Atoi(q.Get("orderDirection")); err != nil {
+	if dir, err := strconv.Atoi(q.Get("OrderDirection")); err != nil {
 		p.OrderDirection = ASCENDING
 	} else {
 		p.OrderDirection = OrderDirection(dir)
