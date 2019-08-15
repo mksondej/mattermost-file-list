@@ -83,7 +83,7 @@ func makeHandler(path string, handler func(basePath string, c *plugin.Context, w
 	}
 }
 
-// /files/channel/:CHANNEL_ID/(total?)
+// /files/channel/:CHANNEL_ID
 func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	urlParams := helpers.GetURLPathParams(r.URL.Path, basePath)
 	if len(urlParams) == 0 {
@@ -98,31 +98,25 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 		return
 	}
 
-	if len(urlParams) > 1 && urlParams[1] == "total" {
-		count := p.dbService.GetTotalFilesCount(targetChannel)
-		helpers.ServeJSON(count, w)
-	} else {
-		q := r.URL.Query()
-		page := &models.ListPageRequest{
-			Page:     1,
-			PageSize: 10,
-			OrderBy:  "CreateAt",
-		}
-		page.FromQueryString(&q, []string{"CreateAt"})
-
-		if files, err := p.dbService.GetFileList(targetChannel, page); err != nil {
-			helpers.ServeJSON(err, w)
-		} else {
-			totalCount := p.dbService.GetTotalFilesCount(targetChannel)
-			isChannelAdmin := p.dbService.CanUserDeleteAllPostsInChannel(currentUser, targetChannel)
-			response := &models.FileListResponse{
-				Items:                        files,
-				Total:                        totalCount,
-				CanCurrentUserDeleteAllFiles: isChannelAdmin,
-				Request:                      page,
-			}
-			helpers.ServeJSON(response, w)
-		}
+	q := r.URL.Query()
+	page := &models.ListPageRequest{
+		Page:     1,
+		PageSize: 10,
+		OrderBy:  "CreateAt",
 	}
+	page.FromQueryString(&q, []string{"CreateAt"})
 
+	if files, err := p.dbService.GetFileList(targetChannel, page); err != nil {
+		helpers.ServeJSON(err, w)
+	} else {
+		totalCount := p.dbService.GetTotalFilesCount(targetChannel, page)
+		isChannelAdmin := p.dbService.CanUserDeleteAllPostsInChannel(currentUser, targetChannel)
+		response := &models.FileListResponse{
+			Items:                        files,
+			Total:                        totalCount,
+			CanCurrentUserDeleteAllFiles: isChannelAdmin,
+			Request:                      page,
+		}
+		helpers.ServeJSON(response, w)
+	}
 }

@@ -17,6 +17,8 @@ type ListPageRequest struct {
 	PageSize       int
 	OrderBy        string
 	OrderDirection OrderDirection
+	SearchQuery    string
+	SearchInverted bool
 }
 
 // FromQueryString initializes page request from query sting values
@@ -40,5 +42,11 @@ func (p *ListPageRequest) FromQueryString(q *url.Values, availableColumns []stri
 
 	if dir, err := strconv.Atoi(q.Get("OrderDirection")); err == nil {
 		p.OrderDirection = OrderDirection(dir)
+	}
+
+	p.SearchQuery = q.Get("SearchQuery")
+
+	if searchInverted, err := strconv.ParseBool(q.Get("SearchInverted")); err == nil {
+		p.SearchInverted = searchInverted
 	}
 }

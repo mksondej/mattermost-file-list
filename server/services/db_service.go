@@ -29,6 +29,16 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 		AND FileInfo.DeleteAt = 0
 	`
 
+	if len(page.SearchQuery) > 0 {
+		sql += `AND FileInfo.Name `
+		if page.SearchInverted {
+			sql += "NOT "
+		}
+
+		sql += `LIKE '%' + :SearchQuery + '%'
+		`
+	}
+
 	if len(page.OrderBy) > 0 {
 		sql += `ORDER BY ` + page.OrderBy
 
@@ -47,9 +57,10 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 	var files []*models.FileListItem
 
 	sqlParams := map[string]interface{}{
-		"ChannelId": channelID,
-		"PageSize":  page.PageSize,
-		"Offset":    (page.Page - 1) * page.PageSize,
+		"ChannelId":   channelID,
+		"PageSize":    page.PageSize,
+		"Offset":      (page.Page - 1) * page.PageSize,
+		"SearchQuery": page.SearchQuery,
 	}
 
 	_, err := s.Supplier.GetReplica().Select(&files, sql, sqlParams)
@@ -58,7 +69,7 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 }
 
 // GetTotalFilesCount returns total number of files in a channel
-func (s *DbService) GetTotalFilesCount(channelID string) int64 {
+func (s *DbService) GetTotalFilesCount(channelID string, page *models.ListPageRequest) int64 {
 	sql := `
 		SELECT
 		COUNT(*)
@@ -67,8 +78,19 @@ func (s *DbService) GetTotalFilesCount(channelID string) int64 {
 		WHERE Posts.ChannelId = :ChannelId
 		AND FileInfo.DeleteAt = 0
 	`
+	if len(page.SearchQuery) > 0 {
+		sql += `AND FileInfo.Name `
+		if page.SearchInverted {
+			sql += "NOT "
+		}
+
+		sql += `LIKE '%' + :SearchQuery + '%'
+		`
+	}
+
 	sqlParams := map[string]interface{}{
-		"ChannelId": channelID,
+		"ChannelId":   channelID,
+		"SearchQuery": page.SearchQuery,
 	}
 
 	count, err := s.Supplier.GetReplica().SelectInt(sql, sqlParams)
