@@ -39,8 +39,8 @@ export default class Root extends React.Component {
 
         return (
             <Pagination>
-                <Pagination.First disabled={Page == 1} />
-                <Pagination.Prev disabled={Page == 1} />
+                <Pagination.First disabled={Page == 1} onClick={() => this.goToPage(1)} />
+                <Pagination.Prev disabled={Page == 1} onClick={() => this.goToPage(Page-1)} />
                 {
                     pages.map(p =>
                         p !== 0
@@ -48,8 +48,8 @@ export default class Root extends React.Component {
                         : <Pagination.Ellipsis />
                     )
                 }
-                <Pagination.Next disabled={Page == maxPage} />
-                <Pagination.Last disabled={Page == maxPage} />
+                <Pagination.Next disabled={Page == maxPage} onClick={() => this.goToPage(Page+1)} />
+                <Pagination.Last disabled={Page == maxPage} onClick={() => this.goToPage(maxPage)} />
             </Pagination>
         );
     }
