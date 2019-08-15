@@ -20,26 +20,25 @@ type ListPageRequest struct {
 }
 
 // FromQueryString initializes page request from query sting values
-func (p *ListPageRequest) FromQueryString(q *url.Values) {
-	var err error
+func (p *ListPageRequest) FromQueryString(q *url.Values, availableColumns []string) {
 
-	if p.Page, err = strconv.Atoi(q.Get("Page")); err != nil {
-		p.Page = 1
+	if page, err := strconv.Atoi(q.Get("Page")); err == nil {
+		p.Page = page
 	}
 
-	if p.PageSize, err = strconv.Atoi(q.Get("PageSize")); err != nil {
-		p.PageSize = 10
+	if pageSize, err := strconv.Atoi(q.Get("PageSize")); err == nil {
+		p.PageSize = pageSize
 	}
 
-	p.OrderBy = q.Get("OrderBy")
-
-	if p.PageSize, err = strconv.Atoi(q.Get("PageSize")); err != nil {
-		p.PageSize = 10
+	//protect OrderBy from sql injection
+	orderByParam := q.Get("OrderBy")
+	for _, col := range availableColumns {
+		if col == orderByParam {
+			p.OrderBy = col
+		}
 	}
 
-	if dir, err := strconv.Atoi(q.Get("OrderDirection")); err != nil {
-		p.OrderDirection = ASCENDING
-	} else {
+	if dir, err := strconv.Atoi(q.Get("OrderDirection")); err == nil {
 		p.OrderDirection = OrderDirection(dir)
 	}
 }

@@ -30,7 +30,15 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 	`
 
 	if len(page.OrderBy) > 0 {
-		sql += `ORDER BY :OrderBy :OrderDirection
+		sql += `ORDER BY ` + page.OrderBy
+
+		if page.OrderDirection == models.ASCENDING {
+			sql += " ASC"
+		} else {
+			sql += " DESC"
+		}
+
+		sql += `
 		`
 	}
 
@@ -38,19 +46,10 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 
 	var files []*models.FileListItem
 
-	var orderDirection string
-	if page.OrderDirection == models.ASCENDING {
-		orderDirection = "ASC"
-	} else {
-		orderDirection = "DESC"
-	}
-
 	sqlParams := map[string]interface{}{
-		"ChannelId":      channelID,
-		"PageSize":       page.PageSize,
-		"Offset":         (page.Page - 1) * page.PageSize,
-		"OrderBy":        page.OrderBy,
-		"OrderDirection": orderDirection,
+		"ChannelId": channelID,
+		"PageSize":  page.PageSize,
+		"Offset":    (page.Page - 1) * page.PageSize,
 	}
 
 	_, err := s.Supplier.GetReplica().Select(&files, sql, sqlParams)

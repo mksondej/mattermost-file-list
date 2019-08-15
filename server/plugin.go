@@ -103,8 +103,12 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 		helpers.ServeJSON(count, w)
 	} else {
 		q := r.URL.Query()
-		page := &models.ListPageRequest{}
-		page.FromQueryString(&q)
+		page := &models.ListPageRequest{
+			Page:     1,
+			PageSize: 10,
+			OrderBy:  "CreateAt",
+		}
+		page.FromQueryString(&q, []string{"CreateAt"})
 
 		if files, err := p.dbService.GetFileList(targetChannel, page); err != nil {
 			helpers.ServeJSON(err, w)
