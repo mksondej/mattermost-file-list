@@ -5,5 +5,5 @@ var manifest = struct {
 	Version string
 }{
 	ID:      "mattermost-file-list",
-	Version: "0.2.0",
+	Version: "0.3.0",
 }
