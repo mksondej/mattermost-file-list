@@ -15,7 +15,6 @@ export default class ListRow extends React.PureComponent {
             link: null
         };
 
-        this.onGetLink = this.onGetLink.bind(this);
         this.onGetPublicLink = this.onGetPublicLink.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onDeleteConfirmed = this.onDeleteConfirmed.bind(this);
@@ -31,19 +30,11 @@ export default class ListRow extends React.PureComponent {
         }
     }
 
-    onGetLink(e) {
-        e.preventDefault();
-        //setClipboardText(getFileUrl(this.props.file.ID));
-        this.setState({ link: getFileUrl(this.props.file.ID)});
-        this.props.pushNotificationAlert("Link has been copied to clipboard.");
-    }
-
     async onGetPublicLink(e) {
         e.preventDefault();
 
         try {
             const response = await Client4.getFilePublicLink(this.props.file.ID);
-            //setClipboardText(response.json().link);
             this.setState({ link: response.link });
             this.props.pushNotificationAlert("Public link has been copied to clipboard.");
         } catch(ex) {
@@ -80,9 +71,6 @@ export default class ListRow extends React.PureComponent {
                 <td>{getFormattedFileSize({size: f.Size})}</td>
                 <td>
                     <ButtonToolbar>
-                        <Button bsSize="small" onClick={this.onGetLink} title="Copy link">
-                            <i className="fa fa-link" style={{ marginRight: 0 }} />
-                        </Button>
                         <Button bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
                             <i className="fa fa-external-link" style={{ marginRight: 0 }} />
                         </Button>
