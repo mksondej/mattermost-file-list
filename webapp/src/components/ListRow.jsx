@@ -6,16 +6,13 @@ import {Client4} from 'mattermost-redux/client';
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import { Button, ButtonToolbar } from "react-bootstrap";
 
-const buttonStyle = {
-    marginRight: "5px"
-};
-
 export default class ListRow extends React.PureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
-            showConfirmationModal: false
+            showConfirmationModal: false,
+            link: null
         };
 
         this.onGetLink = this.onGetLink.bind(this);
@@ -23,24 +20,37 @@ export default class ListRow extends React.PureComponent {
         this.onDelete = this.onDelete.bind(this);
         this.onDeleteConfirmed = this.onDeleteConfirmed.bind(this);
         this.onDeleteCancelled = this.onDeleteCancelled.bind(this);
+        this.copyToClipboard = this.copyToClipboard.bind(this);
     }
 
-    onGetLink() {
-        navigator.clipboard.writeText(
-            getFileUrl(this.props.file.ID)
-        );
+    copyToClipboard(inputRef) {
+        if(this.state.link) {
+            inputRef.select();
+            document.execCommand('copy');
+            this.setState({ link: null });
+        }
+    }
 
+    onGetLink(e) {
+        e.preventDefault();
+        //setClipboardText(getFileUrl(this.props.file.ID));
+        this.setState({ link: getFileUrl(this.props.file.ID)});
         this.props.pushNotificationAlert("Link has been copied to clipboard.");
     }
 
-    async onGetPublicLink() {
+    async onGetPublicLink(e) {
+        e.preventDefault();
+
         try {
             const response = await Client4.getFilePublicLink(this.props.file.ID);
-            navigator.clipboard.writeText(response.json().link);
+            //setClipboardText(response.json().link);
+            this.setState({ link: response.link });
             this.props.pushNotificationAlert("Public link has been copied to clipboard.");
         } catch(ex) {
-            if(ex.statusCode == 501 && ex.json().id === "api.file.get_public_link.disabled.app_error")
+            if(ex.statusCode == 501 && ex.id === "api.file.get_public_link.disabled.app_error")
                 this.props.pushNotificationAlert("Public links have been disabled by the administrator");
+            else
+                throw ex;
         }
     }
 
@@ -86,6 +96,11 @@ export default class ListRow extends React.PureComponent {
                     {
                         this.state.showConfirmationModal &&
                         <ConfirmDeleteModal file={f} onConfirm={this.onDeleteConfirmed} onCancel={this.onDeleteCancelled} />
+                    }
+                    { /* abysmal clipboard browser compatibility forces me to do this. The link will be copied from here */ }
+                    {
+                        this.state.link &&
+                        <textarea ref={this.copyToClipboard} style={{ position: 'relative', left: "-9999px", readonly: "true"}} value={this.state.link} />
                     }
                 </td>
             </tr>
