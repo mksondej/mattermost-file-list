@@ -106,6 +106,11 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 	}
 	page.FromQueryString(&q, []string{"CreateAt"})
 
+	if !page.IsValid() {
+		w.WriteHeader(400)
+		return
+	}
+
 	if files, err := p.dbService.GetFileList(targetChannel, page); err != nil {
 		helpers.ServeJSON(err, w)
 	} else {

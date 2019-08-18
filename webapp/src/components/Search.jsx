@@ -22,7 +22,7 @@ export default class Search extends Component {
     }
 
     onInvertChange(e) {
-        this.setState({ queryInverted: e.checked, dirty: true });
+        this.setState({ queryInverted: e.target.checked, dirty: true });
     }
 
     onSearch(e) {

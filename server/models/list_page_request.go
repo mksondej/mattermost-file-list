@@ -50,3 +50,12 @@ func (p *ListPageRequest) FromQueryString(q *url.Values, availableColumns []stri
 		p.SearchInverted = searchInverted
 	}
 }
+
+// IsValid validates input from the user
+func (p *ListPageRequest) IsValid() bool {
+	if(len(p.SearchQuery) > 0 && len(p.SearchQuery) < 3) {
+		return false
+	}
+
+	return true
+}

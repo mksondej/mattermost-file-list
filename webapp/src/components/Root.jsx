@@ -9,6 +9,7 @@ export default class Root extends React.Component {
         super(props);
 
         this.goToPage = this.goToPage.bind(this);
+        this.onSearch = this.onSearch.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -24,6 +25,16 @@ export default class Root extends React.Component {
         const newRequest = {
             ...this.props.files.Request,
             Page: page
+        };
+
+        this.props.onGetFiles(newRequest);
+    }
+
+    onSearch(params) {
+        const newRequest = {
+            ...this.props.files.Request,
+            SearchQuery: params.query,
+            SearchInverted: params.queryInverted
         };
 
         this.props.onGetFiles(newRequest);
@@ -76,7 +87,7 @@ export default class Root extends React.Component {
                 <Modal.Body>
                     <Row>
                         <Col md={12}>
-                            <Search />
+                            <Search onSearch={this.onSearch} />
                         </Col>
                     </Row>
                     <Row>

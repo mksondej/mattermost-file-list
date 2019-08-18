@@ -35,7 +35,7 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 			sql += "NOT "
 		}
 
-		sql += `LIKE '%' + :SearchQuery + '%'
+		sql += `LIKE CONCAT('%', :SearchQuery, '%')
 		`
 	}
 
