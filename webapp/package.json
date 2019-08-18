@@ -35,6 +35,7 @@
     "mattermost-redux": "^5.13.0",
     "react": "16.8.6",
     "react-redux": "5.0.7",
-    "redux": "4.0.1"
+    "redux": "4.0.1",
+    "superagent": "^5.1.0"
   }
 }

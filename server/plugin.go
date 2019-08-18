@@ -94,15 +94,19 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 	currentUser := getCurrentUserID(r)
 	targetChannel := urlParams[0]
 	if isInChannel := p.dbService.CheckUserIsInChannel(currentUser, targetChannel); isInChannel {
+		p.API.LogWarn("User not in channel wanted to get file list", map[string]string{
+			"currentUser":   currentUser,
+			"targetChannel": targetChannel,
+		})
 		w.WriteHeader(401)
 		return
 	}
 
 	q := r.URL.Query()
 	page := &models.ListPageRequest{
-		Page:     1,
-		PageSize: 10,
-		OrderBy:  "CreateAt",
+		Page:           1,
+		PageSize:       10,
+		OrderBy:        "CreateAt",
 		OrderDirection: models.DESCENDING,
 	}
 	page.FromQueryString(&q, []string{"CreateAt"})

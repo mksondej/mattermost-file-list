@@ -12,9 +12,15 @@ export default class Root extends React.Component {
         this.onSearch = this.onSearch.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if(!this.props.visible && nextProps.visible) {
-            nextProps.onGetFiles();
+    componentDidMount() {
+        if(this.props.visible) {
+            this.props.onGetFiles();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.visible && !prevProps.visible) {
+            this.props.onGetFiles();
         }
     }
 
@@ -98,7 +104,7 @@ export default class Root extends React.Component {
                         }
                         {
                             this.props.files &&
-                            <Table striped hover>
+                            <Table hover>
                                 <thead>
                                     <tr>
                                         <th>File</th>

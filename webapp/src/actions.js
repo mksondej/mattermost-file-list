@@ -10,6 +10,7 @@ import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES} from './action_types';
 import { getLoadedFiles } from './selectors';
 import { Client4 } from 'mattermost-redux/client';
 import { buildQueryString } from "mattermost-redux/utils/helpers";
+import request from 'superagent';
 
 export const getPluginServerRoute = (state) => {
     const config = getConfig(state);
@@ -48,12 +49,14 @@ export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState
     if(pageRequest)
         url += buildQueryString(pageRequest);
 
-    const response = await fetch(url);
-    const responseObject = await response.json();
+    const response = await request.
+        get(url).
+        set(Client4.getOptions({}).headers).
+        accept('application/json');
 
     dispatch({
         type: LOAD_FILES,
-        payload: responseObject
+        payload: response.body
     });
 };
 
