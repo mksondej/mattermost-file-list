@@ -103,6 +103,7 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 		Page:     1,
 		PageSize: 10,
 		OrderBy:  "CreateAt",
+		OrderDirection: models.DESCENDING,
 	}
 	page.FromQueryString(&q, []string{"CreateAt"})
 
