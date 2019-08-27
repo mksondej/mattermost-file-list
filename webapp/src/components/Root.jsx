@@ -3,6 +3,7 @@ import { Table, Modal, ProgressBar, Pagination, Row, Col, Alert } from "react-bo
 import ListRow from "./ListRow";
 import paginate from "../utils/pagination";
 import Search from "./Search";
+import SortIcon from "./SortIcon";
 
 export default class Root extends React.Component {
     constructor(props) {
@@ -10,8 +11,11 @@ export default class Root extends React.Component {
 
         this.goToPage = this.goToPage.bind(this);
         this.onSearch = this.onSearch.bind(this);
+        this.onToggleSort = this.onToggleSort.bind(this);
+        
         this.renderErrorModalBody = this.renderErrorModalBody.bind(this);
         this.renderStandardModalBody = this.renderStandardModalBody.bind(this);
+        this.renderColumnHeader = this.renderColumnHeader.bind(this);
     }
 
     componentDidMount() {
@@ -45,6 +49,20 @@ export default class Root extends React.Component {
             ...this.props.files.Request,
             SearchQuery: params.query,
             SearchInverted: params.queryInverted
+        };
+
+        this.props.onGetFiles(newRequest);
+    }
+
+    onToggleSort(property) {
+        const r = this.props.files.Request;
+
+        const newRequest = {
+            ...r,
+            OrderDirection: r.OrderBy != property
+                ? r.OrderDirection
+                : (r.OrderDirection ? 0 : 1), //flip
+            OrderBy: property
         };
 
         this.props.onGetFiles(newRequest);
@@ -98,10 +116,10 @@ export default class Root extends React.Component {
                         <Table hover>
                             <thead>
                                 <tr>
-                                    <th>File</th>
-                                    <th>Uploaded by</th>
-                                    <th>Uploaded at</th>
-                                    <th>Size</th>
+                                    {this.renderColumnHeader("FileName", "File")}
+                                    {this.renderColumnHeader("CreateByName", "Uploaded by")}
+                                    {this.renderColumnHeader("CreateAt", "Uploaded at")}
+                                    {this.renderColumnHeader("Size", "Size")}
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -129,6 +147,17 @@ export default class Root extends React.Component {
                     </Col>
                 </Row>
             </>
+        );
+    }
+
+    renderColumnHeader(property, label) {
+        const currentRequest = this.props.files.Request;
+        const { OrderBy, OrderDirection } = currentRequest || {};
+
+        return (
+            <th style={{cursor: "pointer"}} onClick={() => this.onToggleSort(property)}>
+                {label} {OrderBy === property ? <SortIcon direction={OrderDirection} /> : null}
+            </th>
         );
     }
 

@@ -109,7 +109,7 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 		OrderBy:        "CreateAt",
 		OrderDirection: models.DESCENDING,
 	}
-	page.FromQueryString(&q, []string{"CreateAt"})
+	page.FromQueryString(&q, []string{ "FileName", "CreateByName", "CreateByID", "CreateAt", "Size" })
 
 	if !page.IsValid() {
 		w.WriteHeader(400)
