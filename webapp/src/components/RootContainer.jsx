@@ -4,12 +4,14 @@ import {bindActionCreators} from 'redux';
 import {
     closeRootModal,
     getCurrentChannelFiles,
-    deleteFile
+    deleteFile,
+    clearErrors
 } from '../actions';
 
 import {
     isRootModalVisible,
-    getLoadedFiles
+    getLoadedFiles,
+    getError
 } from '../selectors';
 
 import {
@@ -30,14 +32,16 @@ const mapStateToProps = (state) => ({
     visible: isRootModalVisible(state),
     files: getLoadedFiles(state),
     currentUserId: getCurrentUserId(state),
-    currentChannelName: getCurrentChannel(state).display_name
+    currentChannelName: getCurrentChannel(state).display_name,
+    error: getError(state)
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     onClose: closeRootModal,
     onGetFiles: getCurrentChannelFiles,
     pushNotificationAlert,
-    onDelete: deleteFile
+    onDelete: deleteFile,
+    onOpen: clearErrors
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

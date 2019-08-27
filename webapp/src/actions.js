@@ -6,10 +6,16 @@ import {
     getCurrentChannelId,
 } from 'mattermost-redux/selectors/entities/common';
 
-import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES} from './action_types';
+import {
+    OPEN_ROOT_MODAL, 
+    CLOSE_ROOT_MODAL, 
+    LOAD_FILES, 
+    SET_ERROR
+} from './action_types';
 import { getLoadedFiles } from './selectors';
 import { Client4 } from 'mattermost-redux/client';
 import { buildQueryString } from "mattermost-redux/utils/helpers";
+
 import request from 'superagent';
 
 export const getPluginServerRoute = (state) => {
@@ -35,36 +41,57 @@ export const openRootModal = simpleAction(OPEN_ROOT_MODAL);
 export const closeRootModal = simpleAction(CLOSE_ROOT_MODAL);
 
 export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState) => {
-    //ensure list reset
-    dispatch({
-        type: LOAD_FILES,
-        payload: null
-    });
-
-    const state = getState();
-    const baseUrl = getPluginServerRoute(state);
-    const channelId = getCurrentChannelId(state);
-
-    let url = baseUrl + "/files/channel/" + channelId;
-    if(pageRequest)
-        url += buildQueryString(pageRequest);
-
-    const response = await request.
-        get(url).
-        set(Client4.getOptions({}).headers).
-        accept('application/json');
-
-    dispatch({
-        type: LOAD_FILES,
-        payload: response.body
-    });
+    try {
+        //ensure list reset
+        dispatch({
+            type: LOAD_FILES,
+            payload: null
+        });
+    
+        const state = getState();
+        const baseUrl = getPluginServerRoute(state);
+        const channelId = getCurrentChannelId(state);
+    
+        let url = baseUrl + "/files/channel/" + channelId;
+        if(pageRequest)
+            url += buildQueryString(pageRequest);
+    
+        const response = await request.
+            get(url).
+            set(Client4.getOptions({}).headers).
+            accept('application/json');
+    
+        dispatch({
+            type: LOAD_FILES,
+            payload: response.body
+        });
+    } catch {
+        dispatch(notifyError());
+    }
 };
 
 export const deleteFile = (file) => async (dispatch, getState) => {
-    await Client4.deletePost(file.PostID);
-
-    const state = getState();
-    const currentFiles = getLoadedFiles(state);
-
-    dispatch(getCurrentChannelFiles(currentFiles.Request));
+    try {
+        await Client4.deletePost(file.PostID);
+    
+        const state = getState();
+        const currentFiles = getLoadedFiles(state);
+    
+        dispatch(getCurrentChannelFiles(currentFiles.Request));
+    } catch {
+        dispatch(notifyError());
+    }
 };
+
+export const clearErrors = () => setError(null);
+
+function notifyError() {
+    return setError("An error occured in the File List plugin. Please notify the administrator. A detailed error message was added to the server log.");
+}
+
+function setError(msg) {
+    return {
+        type: SET_ERROR,
+        payload: msg
+    };
+}

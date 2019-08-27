@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 
-import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES} from './action_types';
+import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES, SET_ERROR} from './action_types';
 
 const rootModalVisible = (state = false, action) => {
     switch (action.type) {
@@ -22,7 +22,17 @@ const files = (state = null, action) => {
     }
 }
 
+const error = (state = null, action) => {
+    switch(action.type) {
+        case SET_ERROR:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export default combineReducers({
     rootModalVisible,
-    files
+    files,
+    error
 });

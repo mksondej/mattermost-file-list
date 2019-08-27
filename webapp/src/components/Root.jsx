@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Modal, ProgressBar, Pagination, Row, Col } from "react-bootstrap";
+import { Table, Modal, ProgressBar, Pagination, Row, Col, Alert } from "react-bootstrap";
 import ListRow from "./ListRow";
 import paginate from "../utils/pagination";
 import Search from "./Search";
@@ -10,16 +10,20 @@ export default class Root extends React.Component {
 
         this.goToPage = this.goToPage.bind(this);
         this.onSearch = this.onSearch.bind(this);
+        this.renderErrorModalBody = this.renderErrorModalBody.bind(this);
+        this.renderStandardModalBody = this.renderStandardModalBody.bind(this);
     }
 
     componentDidMount() {
         if(this.props.visible) {
+            this.props.onOpen();
             this.props.onGetFiles();
         }
     }
 
     componentDidUpdate(prevProps) {
         if(this.props.visible && !prevProps.visible) {
+            this.props.onOpen();
             this.props.onGetFiles();
         }
     }
@@ -75,6 +79,71 @@ export default class Root extends React.Component {
         );
     }
 
+    renderStandardModalBody() {
+        return (
+            <>
+                <Row>
+                    <Col md={12}>
+                        <Search onSearch={this.onSearch} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12}>
+                    {
+                        !this.props.files &&
+                        <ProgressBar active now={100} label="Loading..." />
+                    }
+                    {
+                        this.props.files &&
+                        <Table hover>
+                            <thead>
+                                <tr>
+                                    <th>File</th>
+                                    <th>Uploaded by</th>
+                                    <th>Uploaded at</th>
+                                    <th>Size</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.props.files
+                                && this.props.files.Items
+                                && this.props.files.Items.map(f =>
+                                    <ListRow
+                                        file={f}
+                                        canDelete={f.CreateByID === this.props.currentUserId || this.props.files.CanCurrentUserDeleteAllFiles}
+                                        pushNotificationAlert={this.props.pushNotificationAlert}
+                                        onDelete={this.props.onDelete}
+                                    />
+                                )}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan={5} align="center">
+                                        {this.renderPages()}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </Table>
+                    }
+                    </Col>
+                </Row>
+            </>
+        );
+    }
+
+    renderErrorModalBody() {
+        return (
+            <Row>
+                <Col md={12}>
+                    <Alert bsStyle="error">
+                        {this.props.error}
+                    </Alert>
+                </Col>
+            </Row>
+        );
+    }
+
     render() {
         if (!this.props.visible) {
             return null;
@@ -89,54 +158,12 @@ export default class Root extends React.Component {
                 <Modal.Header closeButton>
                     <Modal.Title>Files for channel "{this.props.currentChannelName}"</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>
-                    <Row>
-                        <Col md={12}>
-                            <Search onSearch={this.onSearch} />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={12}>
-                        {
-                            !this.props.files &&
-                            <ProgressBar active now={100} label="Loading..." />
-                        }
-                        {
-                            this.props.files &&
-                            <Table hover>
-                                <thead>
-                                    <tr>
-                                        <th>File</th>
-                                        <th>Uploaded by</th>
-                                        <th>Uploaded at</th>
-                                        <th>Size</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.props.files
-                                    && this.props.files.Items
-                                    && this.props.files.Items.map(f =>
-                                        <ListRow
-                                            file={f}
-                                            canDelete={f.CreateByID === this.props.currentUserId || this.props.files.CanCurrentUserDeleteAllFiles}
-                                            pushNotificationAlert={this.props.pushNotificationAlert}
-                                            onDelete={this.props.onDelete}
-                                        />
-                                    )}
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colSpan={5} align="center">
-                                            {this.renderPages()}
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </Table>
-                        }
-                        </Col>
-                    </Row>
+                    {
+                        this.props.error
+                        ? this.renderErrorModalBody()
+                        : this.renderStandardModalBody()
+                    }
                 </Modal.Body>
             </Modal>
         );

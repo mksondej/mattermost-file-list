@@ -117,7 +117,8 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 	}
 
 	if files, err := p.dbService.GetFileList(targetChannel, page); err != nil {
-		helpers.ServeJSON(err, w)
+		p.API.LogError("Error occured in GetFileList: " + err.Error())
+		w.WriteHeader(500)
 	} else {
 		totalCount := p.dbService.GetTotalFilesCount(targetChannel, page)
 		isChannelAdmin := p.dbService.CanUserDeleteAllPostsInChannel(currentUser, targetChannel)
