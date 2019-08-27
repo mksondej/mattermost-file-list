@@ -7,3 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## 0.0.1 - 2019-08-15
 ### Added
 - Initial release
+
+## 0.0.4 - 2019-08-27
+### Fixed
+- Fixed search not working on PostgresSQL databases

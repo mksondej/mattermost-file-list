@@ -29,14 +29,22 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 		AND FileInfo.DeleteAt = 0
 	`
 
+	sqlParams := map[string]interface{}{
+		"ChannelId":   channelID,
+		"PageSize":    page.PageSize,
+		"Offset":      (page.Page - 1) * page.PageSize,
+	}
+
 	if len(page.SearchQuery) > 0 {
 		sql += `AND FileInfo.Name `
 		if page.SearchInverted {
 			sql += "NOT "
 		}
 
-		sql += `LIKE CONCAT('%', :SearchQuery, '%')
+		sql += `LIKE :SearchQuery
 		`
+
+		sqlParams["SearchQuery"] = "%" + page.SearchQuery + "%"
 	}
 
 	if len(page.OrderBy) > 0 {
@@ -55,14 +63,6 @@ func (s *DbService) GetFileList(channelID string, page *models.ListPageRequest) 
 	sql += `LIMIT :PageSize OFFSET :Offset`
 
 	var files []*models.FileListItem
-
-	sqlParams := map[string]interface{}{
-		"ChannelId":   channelID,
-		"PageSize":    page.PageSize,
-		"Offset":      (page.Page - 1) * page.PageSize,
-		"SearchQuery": page.SearchQuery,
-	}
-
 	_, err := s.Supplier.GetReplica().Select(&files, sql, sqlParams)
 
 	return files, err

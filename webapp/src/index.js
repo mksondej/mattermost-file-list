@@ -3,6 +3,8 @@ import reducer from './reducer';
 import RootContainer from './components/RootContainer';
 import { openRootModal } from './actions';
 
+import HeaderButtonIcon from './components/HeaderButtonIcon';
+
 export default class Plugin {
     registry = null;
     rootId = null;
@@ -15,10 +17,7 @@ export default class Plugin {
         this.rootId = registry.registerRootComponent(RootContainer);
 
         registry.registerChannelHeaderButtonAction(
-            <i
-                className="fa fa-files-o"
-                aria-hidden='true'
-            />,
+            <HeaderButtonIcon />,
             () => store.dispatch(openRootModal()),
             'Files in channel',
             'Files in channel'
