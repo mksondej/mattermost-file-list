@@ -5,6 +5,8 @@ import paginate from "../utils/pagination";
 import Search from "./Search";
 import SortIcon from "./SortIcon";
 
+const empty = {};
+
 export default class Root extends React.Component {
     constructor(props) {
         super(props);
@@ -33,11 +35,11 @@ export default class Root extends React.Component {
     }
 
     goToPage(page, maxPage) {
-        if(page < 1 || page > maxPage || page === this.props.files.Request.Page)
+        if(page < 1 || page > maxPage || page === this.props.currentRequest.Page)
             return;
 
         const newRequest = {
-            ...this.props.files.Request,
+            ...this.props.currentRequest,
             Page: page
         };
 
@@ -46,7 +48,7 @@ export default class Root extends React.Component {
 
     onSearch(params) {
         const newRequest = {
-            ...this.props.files.Request,
+            ...this.props.currentRequest,
             SearchQuery: params.query,
             SearchInverted: params.queryInverted
         };
@@ -55,7 +57,7 @@ export default class Root extends React.Component {
     }
 
     onToggleSort(property) {
-        const r = this.props.files.Request;
+        const r = this.props.currentRequest;
 
         const newRequest = {
             ...r,
@@ -69,9 +71,9 @@ export default class Root extends React.Component {
     }
 
     renderPages() {
-        if(!this.props.files) return null;
+        if(!this.props.files || !this.props.currentRequest) return null;
 
-        const { Total, Request: { Page, PageSize } } = this.props.files;
+        const { Total, Request: { Page, PageSize } = empty } = this.props.files;
         const maxPage=  Math.ceil(Total / PageSize);
 
         const pages = paginate(Page, maxPage);
@@ -151,8 +153,7 @@ export default class Root extends React.Component {
     }
 
     renderColumnHeader(property, label) {
-        const currentRequest = this.props.files.Request;
-        const { OrderBy, OrderDirection } = currentRequest || {};
+        const { OrderBy, OrderDirection } = this.props.currentRequest || empty;
 
         return (
             <th style={{cursor: "pointer"}} onClick={() => this.onToggleSort(property)}>
@@ -174,7 +175,7 @@ export default class Root extends React.Component {
     }
 
     render() {
-        if (!this.props.visible) {
+        if (!this.props.visible || !this.props.currentChannelName) {
             return null;
         }
 

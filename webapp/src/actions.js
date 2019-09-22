@@ -52,6 +52,9 @@ export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState
         const baseUrl = getPluginServerRoute(state);
         const channelId = getCurrentChannelId(state);
     
+        if(!channelId)
+            return;
+
         let url = baseUrl + "/files/channel/" + channelId;
         if(pageRequest)
             url += buildQueryString(pageRequest);

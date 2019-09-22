@@ -28,11 +28,14 @@ import {
 
 import Root from './Root';
 
+const empty = {};
+
 const mapStateToProps = (state) => ({
     visible: isRootModalVisible(state),
     files: getLoadedFiles(state),
+    currentRequest: (getLoadedFiles(state) || empty).Request,
     currentUserId: getCurrentUserId(state),
-    currentChannelName: getCurrentChannel(state).display_name,
+    currentChannelName: (getCurrentChannel(state) || empty).display_name,
     error: getError(state)
 });
 

@@ -1,6 +1,7 @@
 import {id as pluginId} from './manifest';
 
-const getPluginState = (state) => state['plugins-' + pluginId] || {};
+const empty = {};
+const getPluginState = (state) => state['plugins-' + pluginId] || empty;
 
 export const isRootModalVisible = (state) => getPluginState(state).rootModalVisible;
 
