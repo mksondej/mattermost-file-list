@@ -1,7 +1,9 @@
 import React from 'react';
 import {makeStyleFromTheme, changeOpacity} from 'mattermost-redux/utils/theme_utils';
+import { connect } from 'react-redux';
+import { openRootModal } from '../actions';
 
-function TeamFilesButton({theme}) {
+function TeamFilesButton({theme, onOpenTeamFiles}) {
     const style = getStyle(theme);
 
     return (
@@ -9,6 +11,7 @@ function TeamFilesButton({theme}) {
             <a
                 style={style.buttonHeader}
                 title="Team files"
+                onClick={onOpenTeamFiles}
             >
                 <i
                     className="fa fa-files-o"
@@ -40,4 +43,8 @@ const getStyle = makeStyleFromTheme((theme) => {
     };
 });
 
-export default TeamFilesButton;
+export default connect(null, dispatch => ({
+    onOpenTeamFiles: () => {
+        dispatch(openRootModal(true))
+    }
+}))(TeamFilesButton);

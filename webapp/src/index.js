@@ -19,7 +19,7 @@ export default class Plugin {
 
         registry.registerChannelHeaderButtonAction(
             <HeaderButtonIcon />,
-            () => store.dispatch(openRootModal()),
+            () => store.dispatch(openRootModal(false)),
             'Files in channel',
             'Files in channel'
         );

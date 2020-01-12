@@ -7,9 +7,9 @@ import {
 } from 'mattermost-redux/selectors/entities/common';
 
 import {
-    OPEN_ROOT_MODAL, 
-    CLOSE_ROOT_MODAL, 
-    LOAD_FILES, 
+    OPEN_ROOT_MODAL,
+    CLOSE_ROOT_MODAL,
+    LOAD_FILES,
     SET_ERROR
 } from './action_types';
 import { getLoadedFiles } from './selectors';
@@ -37,7 +37,7 @@ const simpleAction = (type) => () => (dispatch) => {
     dispatch({ type });
 };
 
-export const openRootModal = simpleAction(OPEN_ROOT_MODAL);
+export const openRootModal = (isModalForTeam) => dispatch => dispatch({ type: OPEN_ROOT_MODAL, payload: isModalForTeam });
 export const closeRootModal = simpleAction(CLOSE_ROOT_MODAL);
 
 export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState) => {
@@ -47,23 +47,23 @@ export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState
             type: LOAD_FILES,
             payload: null
         });
-    
+
         const state = getState();
         const baseUrl = getPluginServerRoute(state);
         const channelId = getCurrentChannelId(state);
-    
+
         if(!channelId)
             return;
 
         let url = baseUrl + "/files/channel/" + channelId;
         if(pageRequest)
             url += buildQueryString(pageRequest);
-    
+
         const response = await request.
             get(url).
             set(Client4.getOptions({}).headers).
             accept('application/json');
-    
+
         dispatch({
             type: LOAD_FILES,
             payload: response.body
@@ -76,10 +76,10 @@ export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState
 export const deleteFile = (file) => async (dispatch, getState) => {
     try {
         await Client4.deletePost(file.PostID);
-    
+
         const state = getState();
         const currentFiles = getLoadedFiles(state);
-    
+
         dispatch(getCurrentChannelFiles(currentFiles.Request));
     } catch {
         dispatch(notifyError());

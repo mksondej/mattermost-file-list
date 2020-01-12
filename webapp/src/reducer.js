@@ -4,14 +4,25 @@ import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES, SET_ERROR} from './action
 
 const rootModalVisible = (state = false, action) => {
     switch (action.type) {
-    case OPEN_ROOT_MODAL:
-        return true;
-    case CLOSE_ROOT_MODAL:
-        return false;
-    default:
-        return state;
+        case OPEN_ROOT_MODAL:
+            return true;
+        case CLOSE_ROOT_MODAL:
+            return false;
+        default:
+            return state;
     }
 };
+
+const isModalForTeam = (state = false, action) => {
+    switch(action.type) {
+        case OPEN_ROOT_MODAL:
+            return action.payload;
+        case CLOSE_ROOT_MODAL:
+            return false;
+        default:
+            return state;
+    }
+}
 
 const files = (state = null, action) => {
     switch(action.type) {
@@ -33,6 +44,7 @@ const error = (state = null, action) => {
 
 export default combineReducers({
     rootModalVisible,
+    isModalForTeam,
     files,
     error
 });

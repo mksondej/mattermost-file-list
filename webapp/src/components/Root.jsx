@@ -198,7 +198,14 @@ export default class Root extends React.Component {
                 onHide={this.props.onClose}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Files for channel "{this.props.currentChannelName}"</Modal.Title>
+                    <Modal.Title>
+                        {
+                            this.props.isModalForTeam
+                            ? <text>Files for team "{this.props.currentTeamName}"</text>
+                            : <text>Files for channel "{this.props.currentChannelName}"</text>
+                        }
+
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {

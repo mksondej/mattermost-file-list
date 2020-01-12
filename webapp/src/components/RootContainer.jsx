@@ -11,7 +11,8 @@ import {
 import {
     isRootModalVisible,
     getLoadedFiles,
-    getError
+    getError,
+    isModalForTeam
 } from '../selectors';
 
 import {
@@ -36,6 +37,7 @@ const mapStateToProps = (state) => ({
     files: getLoadedFiles(state),
     currentRequest: (getLoadedFiles(state) || empty).Request,
     currentUserId: getCurrentUserId(state),
+    isModalForTeam: isModalForTeam(state),
     currentChannelName: (getCurrentChannel(state) || empty).display_name,
     currentTeamName: (getCurrentTeam(state) || empty).name,
     error: getError(state)
