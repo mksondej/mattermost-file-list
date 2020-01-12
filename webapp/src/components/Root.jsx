@@ -83,7 +83,7 @@ export default class Root extends React.Component {
         }
 
         return (
-            <Pagination>
+            <Pagination bsClass="pagination file-list-pagination">
                 <Pagination.First disabled={Page == 1} onClick={() => this.goToPage(1, maxPage)} />
                 <Pagination.Prev disabled={Page == 1} onClick={() => this.goToPage(Page-1, maxPage)} />
                 {
@@ -100,8 +100,19 @@ export default class Root extends React.Component {
     }
 
     renderStandardModalBody() {
+        const theme = this.props.theme;
+
         return (
             <>
+            <style type="text/css">
+                {`
+                    .file-list-pagination > li > a,
+                    .file-list-pagination > li > span {
+                        color: ${theme.buttonColor};
+                        background-color: ${theme.buttonBg};
+                    }
+                `}
+            </style>
                 <Row>
                     <Col md={12}>
                         <Search onSearch={this.onSearch} />
@@ -115,7 +126,7 @@ export default class Root extends React.Component {
                     }
                     {
                         this.props.files &&
-                        <Table hover>
+                        <Table hover bsClass="table file-list-table">
                             <thead>
                                 <tr>
                                     {this.renderColumnHeader("FileName", "File")}

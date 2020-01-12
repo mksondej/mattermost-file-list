@@ -9,8 +9,8 @@ const ConfirmDeleteModal = ({ file, onConfirm, onCancel }) => (
             <p className="text-danger">Warning: this will delete the entire post with the file. If the post contains more files they will be deleted too.</p>
         </Modal.Body>
         <Modal.Footer>
-            <Button onClick={onConfirm}>Yes</Button>
-            <Button onClick={onCancel} bsStyle="primary">
+            <Button bsStyle="primary" onClick={onConfirm}>Yes</Button>
+            <Button onClick={onCancel} bsStyle="danger">
                 No
             </Button>
         </Modal.Footer>

@@ -4,13 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## 0.6.0 - TBD
+## 0.6.0 - 2020-01-12
 
 ### Breaking changes
 - Raised min version of MM to 5.16 because it officially introduced an API for reading unsanitized configuration which this plugin needs. Previous version relied on quite a hack and it was a reason for bugs especially in non-standard Mattermost installations.
 
 ### Fixed
 - Errors related to the config.json file should be now fixed
+- Improved styling for all themes
 
 ### Added
 - Jumping to post with file

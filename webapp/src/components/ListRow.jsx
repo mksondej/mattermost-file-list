@@ -72,22 +72,22 @@ export default class ListRow extends React.PureComponent {
         const f = this.props.file;
 
         return (
-            <tr>
+            <tr className="post">
                 <td><a href={getFileDownloadUrl(f.ID)}>{f.FileName}</a></td>
                 <td>{f.CreateByName}</td>
                 <td>{epochMsToString(f.CreateAt)}</td>
                 <td>{getFormattedFileSize({size: f.Size})}</td>
                 <td>
                     <ButtonToolbar>
-                        <Button bsSize="small" onClick={this.onJumpToPost} title="Jump to post">
+                        <Button bsStyle="primary" bsSize="small" onClick={this.onJumpToPost} title="Jump to post">
                             <span>Jump</span>
                         </Button>
-                        <Button bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
+                        <Button bsStyle="primary" bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
                             <i className="fa fa-external-link" style={{ marginRight: 0 }} />
                         </Button>
                         {
                             this.props.canDelete &&
-                            <Button bsSize="small" onClick={this.onDelete} title="Delete">
+                            <Button bsStyle="danger" bsSize="small" onClick={this.onDelete} title="Delete">
                                 <i className="fa fa-times" style={{ marginRight: 0 }} />
                             </Button>
                         }
