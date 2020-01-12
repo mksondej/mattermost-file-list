@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/mattermost/mattermost-server/config"
 	"github.com/mattermost/mattermost-server/plugin"
 	"github.com/mattermost/mattermost-server/store/sqlstore"
 
@@ -29,12 +28,7 @@ type Plugin struct {
 
 // OnActivate is called when plugin activates. Reads the config and inits connection to the db
 func (p *Plugin) OnActivate() error {
-	configStore, err := config.NewFileStore("config.json", false)
-	if err != nil {
-		return err
-	}
-
-	appConfig := configStore.Get()
+	appConfig := p.API.GetUnsanitizedConfig()
 
 	p.dbService = &services.DbService{
 		Supplier: sqlstore.NewSqlSupplier(appConfig.SqlSettings, nil),

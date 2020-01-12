@@ -17,6 +17,8 @@ Preview:
 ## How to develop
 
 This projects uses Docker containers to build, so you don't have to install any dependencies other than Docker.
-Simply run `docker-build.sh` (or `.ps1` on Windows) and the project will be built inside an autmatically configured temporary container.
+Simply run `docker-build.ps1` (on *nix systems you need Powershell) and the project will be built inside an autmatically configured temporary container.
 The container caches entire GOPATH inside `.docker_cache` directory, so it should be fast and dependencies won't be redownloaded everytime you run the build.
 Have fun :)
+
+Optionally you can also pass `-withPreview` which will spin up the mattermost-preview instance (if it's not running) and deploy the plugin to it.
