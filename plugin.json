@@ -13,5 +13,14 @@
     },
     "webapp": {
         "bundle_path": "webapp/dist/main.js"
+    },
+    "settings_schema": {
+        "settings": [
+            {
+                "key": "teamFilesEnabled",
+                "display_name": "Enable list of all files in the team",
+                "type": "bool"
+            }
+        ]
     }
 }
