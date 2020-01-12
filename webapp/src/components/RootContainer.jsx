@@ -27,6 +27,7 @@ import {
 } from 'mattermost-redux/selectors/entities/channels';
 
 import Root from './Root';
+import { getCurrentTeam } from 'mattermost-redux/selectors/entities/teams';
 
 const empty = {};
 
@@ -36,6 +37,7 @@ const mapStateToProps = (state) => ({
     currentRequest: (getLoadedFiles(state) || empty).Request,
     currentUserId: getCurrentUserId(state),
     currentChannelName: (getCurrentChannel(state) || empty).display_name,
+    currentTeamName: (getCurrentTeam(state) || empty).name,
     error: getError(state)
 });
 

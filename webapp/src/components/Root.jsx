@@ -14,7 +14,7 @@ export default class Root extends React.Component {
         this.goToPage = this.goToPage.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.onToggleSort = this.onToggleSort.bind(this);
-        
+
         this.renderErrorModalBody = this.renderErrorModalBody.bind(this);
         this.renderStandardModalBody = this.renderStandardModalBody.bind(this);
         this.renderColumnHeader = this.renderColumnHeader.bind(this);
@@ -130,6 +130,7 @@ export default class Root extends React.Component {
                                 && this.props.files.Items
                                 && this.props.files.Items.map(f =>
                                     <ListRow
+                                        currentTeamName={this.props.currentTeamName}
                                         file={f}
                                         canDelete={f.CreateByID === this.props.currentUserId || this.props.files.CanCurrentUserDeleteAllFiles}
                                         pushNotificationAlert={this.props.pushNotificationAlert}

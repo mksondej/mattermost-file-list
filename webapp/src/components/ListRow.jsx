@@ -5,6 +5,7 @@ import { getFileUrl, getFormattedFileSize, getFileDownloadUrl } from "mattermost
 import {Client4} from 'mattermost-redux/client';
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import { Button, ButtonToolbar } from "react-bootstrap";
+import {browserHistory} from 'mattermost-redux/utils/post_utils';
 
 export default class ListRow extends React.PureComponent {
     constructor(props) {
@@ -20,6 +21,7 @@ export default class ListRow extends React.PureComponent {
         this.onDeleteConfirmed = this.onDeleteConfirmed.bind(this);
         this.onDeleteCancelled = this.onDeleteCancelled.bind(this);
         this.copyToClipboard = this.copyToClipboard.bind(this);
+        this.onJumpToPost = this.onJumpToPost.bind(this);
     }
 
     copyToClipboard(inputRef) {
@@ -43,6 +45,12 @@ export default class ListRow extends React.PureComponent {
             else
                 throw ex;
         }
+    }
+
+    onJumpToPost() {
+        //that's how it's implemented in
+        //https://github.com/mattermost/mattermost-webapp/blob/master/components/search_results_item/search_results_item.jsx#L175
+        window.location.assign(`/${this.props.currentTeamName}/pl/${this.props.file.PostID}`);
     }
 
     onDelete() {
@@ -71,6 +79,9 @@ export default class ListRow extends React.PureComponent {
                 <td>{getFormattedFileSize({size: f.Size})}</td>
                 <td>
                     <ButtonToolbar>
+                        <Button bsSize="small" onClick={this.onJumpToPost} title="Jump to post">
+                            <span>Jump</span>
+                        </Button>
                         <Button bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
                             <i className="fa fa-external-link" style={{ marginRight: 0 }} />
                         </Button>
@@ -97,6 +108,7 @@ export default class ListRow extends React.PureComponent {
 }
 
 ListRow.propTypes = {
+    currentTeamName: PropTypes.string,
     file: PropTypes.object,
     canDelete: PropTypes.bool,
     onDelete: PropTypes.func
