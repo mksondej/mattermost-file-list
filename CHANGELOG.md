@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 0.7.0 - 2020-01-19
 ### Added
-- Lists of all files in the team. Optionally for admins also a list of all files even from channels where the admin is not a member. Both of those list are opt-in: have to be enabled in pluggin settings.
+- Added list of all files in the team. Also added an optional for admin list of all files even from channels where the admin is not a member. Both of those lists are opt-in: have to be enabled in plugin settings.
 - Disabled "Get public link" button when the public links are disabled in the admin console
 
 ## 0.6.0 - 2020-01-12
