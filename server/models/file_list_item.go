@@ -7,6 +7,7 @@ type FileListItem struct {
 	FileName     string
 	CreateByName string
 	CreateByID   string
+	ChannelName	 string
 	CreateAt     int64
 	Size         int64
 }

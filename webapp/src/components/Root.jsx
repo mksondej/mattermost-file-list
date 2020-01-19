@@ -145,6 +145,7 @@ export default class Root extends React.Component {
                                         file={f}
                                         canDelete={f.CreateByID === this.props.currentUserId || this.props.files.CanCurrentUserDeleteAllFiles}
                                         pushNotificationAlert={this.props.pushNotificationAlert}
+                                        arePublicLinksEnabled={this.props.arePublicLinksEnabled}
                                         onDelete={this.props.onDelete}
                                     />
                                 )}

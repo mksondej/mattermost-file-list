@@ -4,7 +4,7 @@ import RootContainer from './components/RootContainer';
 import { openRootModal } from './actions';
 
 import HeaderButtonIcon from './components/HeaderButtonIcon';
-import TeamFilesButton from './components/TeamFilesButton';
+import TeamFilesButtons from './components/TeamFilesButtons';
 
 export default class Plugin {
     registry = null;
@@ -25,7 +25,7 @@ export default class Plugin {
         );
 
         registry.registerLeftSidebarHeaderComponent(
-            TeamFilesButton
+            TeamFilesButtons
         );
 
         registry.registerReducer(reducer);

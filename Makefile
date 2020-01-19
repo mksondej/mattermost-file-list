@@ -126,6 +126,10 @@ endif
 .PHONY: dist
 dist:	apply server webapp bundle
 
+# Bundle plugin but don't rebuild front-end
+.PHONY: dist-server
+dist-server: apply server bundle
+
 ## Installs the plugin to a (development) server.
 .PHONY: deploy
 deploy: dist

@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 
 import {
     closeRootModal,
-    getCurrentChannelFiles,
+    getFiles,
     deleteFile,
     clearErrors
 } from '../actions';
@@ -29,6 +29,7 @@ import {
 
 import Root from './Root';
 import { getCurrentTeam } from 'mattermost-redux/selectors/entities/teams';
+import { getConfig } from 'mattermost-redux/selectors/entities/general';
 
 const empty = {};
 
@@ -40,12 +41,13 @@ const mapStateToProps = (state) => ({
     isModalForTeam: isModalForTeam(state),
     currentChannelName: (getCurrentChannel(state) || empty).display_name,
     currentTeamName: (getCurrentTeam(state) || empty).name,
-    error: getError(state)
+    error: getError(state),
+    arePublicLinksEnabled: getConfig(state).EnablePublicLink === 'true'
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     onClose: closeRootModal,
-    onGetFiles: getCurrentChannelFiles,
+    onGetFiles: getFiles,
     pushNotificationAlert,
     onDelete: deleteFile,
     onOpen: clearErrors

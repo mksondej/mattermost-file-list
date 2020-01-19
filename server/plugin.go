@@ -48,7 +48,9 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	}
 
 	handlers := [](func(c *plugin.Context, w http.ResponseWriter, r *http.Request) bool){
-		makeHandler("/files/channel", p.serveFileList),
+		makeHandler("/files/channel", p.serveChannelFileList),
+		makeHandler("/files/team", p.serveTeamFileList),
+		makeHandler("/config", p.serveConfig),
 	}
 
 	for _, handler := range handlers {
@@ -78,7 +80,7 @@ func makeHandler(path string, handler func(basePath string, c *plugin.Context, w
 }
 
 // /files/channel/:CHANNEL_ID
-func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) serveChannelFileList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	urlParams := helpers.GetURLPathParams(r.URL.Path, basePath)
 	if len(urlParams) == 0 {
 		w.WriteHeader(404)
@@ -103,19 +105,19 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 		OrderBy:        "CreateAt",
 		OrderDirection: models.DESCENDING,
 	}
-	page.FromQueryString(&q, []string{ "FileName", "CreateByName", "CreateByID", "CreateAt", "Size" })
+	page.FromQueryString(&q, []string{"FileName", "CreateByName", "CreateByID", "CreateAt", "Size"})
 
 	if !page.IsValid() {
 		w.WriteHeader(400)
 		return
 	}
 
-	if files, err := p.dbService.GetFileList(targetChannel, page); err != nil {
+	if files, err := p.dbService.GetFileList(targetChannel, "", "", page); err != nil {
 		p.API.LogError("Error occured in GetFileList: " + err.Error())
 		w.WriteHeader(500)
 	} else {
-		totalCount := p.dbService.GetTotalFilesCount(targetChannel, page)
-		isChannelAdmin := p.dbService.CanUserDeleteAllPostsInChannel(currentUser, targetChannel)
+		totalCount := p.dbService.GetTotalFilesCount(targetChannel, "", "", page)
+		isChannelAdmin := p.dbService.IsChannelAdmin(currentUser, targetChannel)
 		response := &models.FileListResponse{
 			Items:                        files,
 			Total:                        totalCount,
@@ -124,4 +126,58 @@ func (p *Plugin) serveFileList(basePath string, c *plugin.Context, w http.Respon
 		}
 		helpers.ServeJSON(response, w)
 	}
+}
+
+// /files/team/:TEAM_ID/[all]
+func (p *Plugin) serveTeamFileList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+	urlParams := helpers.GetURLPathParams(r.URL.Path, basePath)
+	if len(urlParams) == 0 {
+		w.WriteHeader(404)
+		return
+	}
+
+	teamID := urlParams[0]
+	shouldReturnAll := false
+	currentUser := getCurrentUserID(r)
+	if len(urlParams) > 1 {
+		shouldReturnAll = urlParams[1] == "all" && p.dbService.IsTeamAdmin(currentUser, teamID)
+	}
+
+	q := r.URL.Query()
+	page := &models.ListPageRequest{
+		Page:           1,
+		PageSize:       10,
+		OrderBy:        "CreateAt",
+		OrderDirection: models.DESCENDING,
+	}
+	page.FromQueryString(&q, []string{"FileName", "CreateByName", "CreateByID", "CreateAt", "Size"})
+
+	if !page.IsValid() {
+		w.WriteHeader(400)
+		return
+	}
+
+	var limitResultToChannelsOfUser string
+	if !shouldReturnAll {
+		limitResultToChannelsOfUser = currentUser
+	}
+
+	if files, err := p.dbService.GetFileList("", teamID, limitResultToChannelsOfUser, page); err != nil {
+		p.API.LogError("Error occured in GetFileList: " + err.Error())
+		w.WriteHeader(500)
+	} else {
+		totalCount := p.dbService.GetTotalFilesCount("", teamID, limitResultToChannelsOfUser, page)
+		response := &models.FileListResponse{
+			Items:   files,
+			Total:   totalCount,
+			Request: page,
+		}
+		helpers.ServeJSON(response, w)
+	}
+}
+
+// /config
+func (p *Plugin) serveConfig(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+	config := p.getConfiguration()
+	helpers.ServeJSON(config, w)
 }

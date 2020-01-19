@@ -10,3 +10,6 @@ export const getLoadedFiles = (state) => getPluginState(state).files;
 export const getError = state => getPluginState(state).error;
 
 export const isModalForTeam = state => getPluginState(state).isModalForTeam;
+export const isTeamModalForAdmin = state => getPluginState(state).isTeamModalForAdmin;
+
+export const getConfig = (state) => getPluginState(state).config;

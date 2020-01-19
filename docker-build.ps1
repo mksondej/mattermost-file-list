@@ -1,5 +1,8 @@
 param (
-    [switch] $withPreview
+    # Runs mattermost-preview container along with the build
+    # and deploys the result to that container through its API
+    [switch] $withPreview,
+    [parameter(mandatory=$false, ValueFromRemainingArguments=$true)] $RemainingParameters = "make dist"
 )
 
 docker build -t build:latest .
@@ -39,6 +42,7 @@ if($withPreview) {
             --name mattermost-preview `
             -d `
             --publish 8065:8065 `
+            --publish 3306:3306 `
             mattermost/mattermost-preview:latest `
     }
 }
@@ -56,12 +60,6 @@ if($withPreview) {
     $runCmd += " -e MM_ADMIN_PASSWORD=admin";
 }
 
-$runCmd += " -w /app build:latest";
-
-if($withPreview) {
-    $runCmd += " make deploy";
-} else {
-    $runCmd += " make dist";
-}
+$runCmd += " -w /app build:latest " + $RemainingParameters;
 
 Invoke-Expression $runCmd

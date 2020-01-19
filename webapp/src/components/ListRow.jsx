@@ -82,9 +82,12 @@ export default class ListRow extends React.PureComponent {
                         <Button bsStyle="primary" bsSize="small" onClick={this.onJumpToPost} title="Jump to post">
                             <span>Jump</span>
                         </Button>
-                        <Button bsStyle="primary" bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
-                            <i className="fa fa-external-link" style={{ marginRight: 0 }} />
-                        </Button>
+                        {
+                            this.props.arePublicLinksEnabled &&
+                            <Button bsStyle="primary" bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
+                                <i className="fa fa-external-link" style={{ marginRight: 0 }} />
+                            </Button>
+                        }
                         {
                             this.props.canDelete &&
                             <Button bsStyle="danger" bsSize="small" onClick={this.onDelete} title="Delete">

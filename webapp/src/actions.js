@@ -1,5 +1,5 @@
 
-import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig as getMattermostConfig} from 'mattermost-redux/selectors/entities/general';
 import {id as pluginId} from './manifest';
 
 import {
@@ -10,16 +10,22 @@ import {
     OPEN_ROOT_MODAL,
     CLOSE_ROOT_MODAL,
     LOAD_FILES,
-    SET_ERROR
+    SET_ERROR,
+    SET_CONFIG
 } from './action_types';
-import { getLoadedFiles } from './selectors';
+import {
+    getLoadedFiles,
+    isModalForTeam,
+    isTeamModalForAdmin
+} from './selectors';
 import { Client4 } from 'mattermost-redux/client';
 import { buildQueryString } from "mattermost-redux/utils/helpers";
 
 import request from 'superagent';
+import { getCurrentTeamId } from 'mattermost-redux/selectors/entities/teams';
 
 export const getPluginServerRoute = (state) => {
-    const config = getConfig(state);
+    const config = getMattermostConfig(state);
 
     let basePath = '/';
     if (config && config.SiteURL) {
@@ -37,10 +43,24 @@ const simpleAction = (type) => () => (dispatch) => {
     dispatch({ type });
 };
 
-export const openRootModal = (isModalForTeam) => dispatch => dispatch({ type: OPEN_ROOT_MODAL, payload: isModalForTeam });
+export const openRootModal = (isModalForTeam, isTeamModalForAdmin) => dispatch => dispatch({ type: OPEN_ROOT_MODAL, isModalForTeam, isTeamModalForAdmin });
 export const closeRootModal = simpleAction(CLOSE_ROOT_MODAL);
 
-export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState) => {
+export const getConfig = () => async (dispatch, getState) => {
+    const baseUrl = getPluginServerRoute(getState());
+
+    const response = await request.
+        get(baseUrl + "/config").
+        set(Client4.getOptions({}).headers).
+        accept('application/json');
+
+    dispatch({
+        type: SET_CONFIG,
+        payload: response.body
+    });
+}
+
+export const getFiles = (pageRequest) => async (dispatch, getState) => {
     try {
         //ensure list reset
         dispatch({
@@ -49,13 +69,23 @@ export const getCurrentChannelFiles = (pageRequest) => async (dispatch, getState
         });
 
         const state = getState();
+        const isTeamMode = isModalForTeam(state);
         const baseUrl = getPluginServerRoute(state);
-        const channelId = getCurrentChannelId(state);
 
-        if(!channelId)
-            return;
+        let url = baseUrl;
+        if(!isTeamMode) {
+            const channelId = getCurrentChannelId(state);
+            url += "/files/channel/" + channelId;
+        } else {
+            const teamId = getCurrentTeamId(state);
+            url += "/files/team/" + teamId;
 
-        let url = baseUrl + "/files/channel/" + channelId;
+            const shouldGetAll = isTeamModalForAdmin(state);
+            if(shouldGetAll) {
+                url += "/all";
+            }
+        }
+
         if(pageRequest)
             url += buildQueryString(pageRequest);
 
@@ -80,7 +110,7 @@ export const deleteFile = (file) => async (dispatch, getState) => {
         const state = getState();
         const currentFiles = getLoadedFiles(state);
 
-        dispatch(getCurrentChannelFiles(currentFiles.Request));
+        dispatch(getFiles(currentFiles.Request));
     } catch {
         dispatch(notifyError());
     }
