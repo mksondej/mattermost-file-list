@@ -130,6 +130,7 @@ export default class Root extends React.Component {
                             <thead>
                                 <tr>
                                     {this.renderColumnHeader("FileName", "File")}
+                                    {this.props.isModalForTeam && this.renderColumnHeader("ChannelName", "Channel")}
                                     {this.renderColumnHeader("CreateByName", "Uploaded by")}
                                     {this.renderColumnHeader("CreateAt", "Uploaded at")}
                                     {this.renderColumnHeader("Size", "Size")}
@@ -141,6 +142,7 @@ export default class Root extends React.Component {
                                 && this.props.files.Items
                                 && this.props.files.Items.map(f =>
                                     <ListRow
+                                        isModalForTeam={this.props.isModalForTeam}
                                         currentTeamName={this.props.currentTeamName}
                                         file={f}
                                         canDelete={f.CreateByID === this.props.currentUserId || this.props.files.CanCurrentUserDeleteAllFiles}

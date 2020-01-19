@@ -74,6 +74,10 @@ export default class ListRow extends React.PureComponent {
         return (
             <tr className="post">
                 <td><a href={getFileDownloadUrl(f.ID)}>{f.FileName}</a></td>
+                {
+                    this.props.isModalForTeam &&
+                    <td>{f.ChannelName}</td>
+                }
                 <td>{f.CreateByName}</td>
                 <td>{epochMsToString(f.CreateAt)}</td>
                 <td>{getFormattedFileSize({size: f.Size})}</td>
