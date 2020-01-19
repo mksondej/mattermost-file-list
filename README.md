@@ -1,7 +1,10 @@
 # Mattermost File List
 
-Adds a paged, searchable and sortable file list to each channel.
-The list is opened through a button in the top panel.
+Adds a paged, searchable and sortable file list to each channel and team.
+You can open the cahnnel file  list through a button in the top panel.
+The team file list is available above channel list, but it has to be first enabled in the plugin settings.
+Admins can additionally access a list of all files from all channels, even where they are not a member.
+
 Through the list you can obtain public or normal links to the files, open and delete entire posts.
 
 Preview:
@@ -13,6 +16,7 @@ Preview:
 
 1. Grab the latest `.tar.gz` archive from [Releases](https://github.com/Amonith/mattermost-file-list/releases).
 2. Follow standard Mattermost plugin installation procedure (either install it through the web system console or directly by extracting it to /plugins/ folder).
+3. Remember to check out plugin settings for additonal features!
 
 ## How to develop
 

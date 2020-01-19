@@ -130,6 +130,7 @@ export default class Root extends React.Component {
                             <thead>
                                 <tr>
                                     {this.renderColumnHeader("FileName", "File")}
+                                    {this.props.isModalForTeam && this.renderColumnHeader("ChannelName", "Channel")}
                                     {this.renderColumnHeader("CreateByName", "Uploaded by")}
                                     {this.renderColumnHeader("CreateAt", "Uploaded at")}
                                     {this.renderColumnHeader("Size", "Size")}
@@ -141,10 +142,12 @@ export default class Root extends React.Component {
                                 && this.props.files.Items
                                 && this.props.files.Items.map(f =>
                                     <ListRow
+                                        isModalForTeam={this.props.isModalForTeam}
                                         currentTeamName={this.props.currentTeamName}
                                         file={f}
                                         canDelete={f.CreateByID === this.props.currentUserId || this.props.files.CanCurrentUserDeleteAllFiles}
                                         pushNotificationAlert={this.props.pushNotificationAlert}
+                                        arePublicLinksEnabled={this.props.arePublicLinksEnabled}
                                         onDelete={this.props.onDelete}
                                     />
                                 )}
@@ -198,7 +201,14 @@ export default class Root extends React.Component {
                 onHide={this.props.onClose}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Files for channel "{this.props.currentChannelName}"</Modal.Title>
+                    <Modal.Title>
+                        {
+                            this.props.isModalForTeam
+                            ? <text>Files for team "{this.props.currentTeamName}"</text>
+                            : <text>Files for channel "{this.props.currentChannelName}"</text>
+                        }
+
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {

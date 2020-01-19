@@ -4,6 +4,7 @@ import RootContainer from './components/RootContainer';
 import { openRootModal } from './actions';
 
 import HeaderButtonIcon from './components/HeaderButtonIcon';
+import TeamFilesButtons from './components/TeamFilesButtons';
 
 export default class Plugin {
     registry = null;
@@ -18,9 +19,13 @@ export default class Plugin {
 
         registry.registerChannelHeaderButtonAction(
             <HeaderButtonIcon />,
-            () => store.dispatch(openRootModal()),
+            () => store.dispatch(openRootModal(false)),
             'Files in channel',
             'Files in channel'
+        );
+
+        registry.registerLeftSidebarHeaderComponent(
+            TeamFilesButtons
         );
 
         registry.registerReducer(reducer);
