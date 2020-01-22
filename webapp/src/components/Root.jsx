@@ -200,7 +200,7 @@ export default class Root extends React.Component {
 
         return (
             <Modal
-                bsSize="lg"
+                bsSize="xl"
                 show={this.props.visible}
                 onHide={this.props.onClose}
             >
