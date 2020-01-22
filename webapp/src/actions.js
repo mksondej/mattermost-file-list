@@ -121,8 +121,16 @@ export const getExtensions = () => async (dispatch, getState) => {
     try {
         const state = getState();
         const baseUrl = getPluginServerRoute(state);
+        const isTeamMode = isModalForTeam(state);
 
-        let url = baseUrl + "/files/extensions";
+        let url = baseUrl;
+        if(!isTeamMode) {
+            const channelId = getCurrentChannelId(state);
+            url += "/files/channel/" + channelId + "/extensions";
+        } else {
+            const teamId = getCurrentTeamId(state);
+            url += "/files/team/" + teamId + "/extensions";
+        }
 
         const response = await request.
             get(url).

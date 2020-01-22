@@ -50,7 +50,6 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	handlers := [](func(c *plugin.Context, w http.ResponseWriter, r *http.Request) bool){
 		makeHandler("/files/channel", p.serveChannelFileList),
 		makeHandler("/files/team", p.serveTeamFileList),
-		makeHandler("/files/extensions", p.serveExtensionList),
 		makeHandler("/config", p.serveConfig),
 	}
 
@@ -80,7 +79,7 @@ func makeHandler(path string, handler func(basePath string, c *plugin.Context, w
 	}
 }
 
-// /files/channel/:CHANNEL_ID
+// /files/channel/:CHANNEL_ID/[extensions]
 func (p *Plugin) serveChannelFileList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	urlParams := helpers.GetURLPathParams(r.URL.Path, basePath)
 	if len(urlParams) == 0 {
@@ -97,6 +96,19 @@ func (p *Plugin) serveChannelFileList(basePath string, c *plugin.Context, w http
 		})
 		w.WriteHeader(401)
 		return
+	}
+
+	if len(urlParams) > 1 {
+		if urlParams[1] == "extensions" {
+			if extensions, err := p.dbService.GetAllExtensions(targetChannel, ""); err != nil {
+				p.API.LogError("Error occured in DbService.GetAllExtensions: " + err.Error())
+				w.WriteHeader(500)
+			} else {
+				helpers.ServeJSON(extensions, w)
+			}
+
+			return
+		}
 	}
 
 	q := r.URL.Query()
@@ -129,7 +141,7 @@ func (p *Plugin) serveChannelFileList(basePath string, c *plugin.Context, w http
 	}
 }
 
-// /files/team/:TEAM_ID/[all]
+// /files/team/:TEAM_ID/[all|extensions]
 func (p *Plugin) serveTeamFileList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	urlParams := helpers.GetURLPathParams(r.URL.Path, basePath)
 	if len(urlParams) == 0 {
@@ -141,6 +153,17 @@ func (p *Plugin) serveTeamFileList(basePath string, c *plugin.Context, w http.Re
 	shouldReturnAll := false
 	currentUser := getCurrentUserID(r)
 	if len(urlParams) > 1 {
+		if urlParams[1] == "extensions" {
+			if extensions, err := p.dbService.GetAllExtensions("", teamID); err != nil {
+				p.API.LogError("Error occured in DbService.GetAllExtensions: " + err.Error())
+				w.WriteHeader(500)
+			} else {
+				helpers.ServeJSON(extensions, w)
+			}
+
+			return
+		}
+
 		shouldReturnAll = urlParams[1] == "all" && p.dbService.IsTeamAdmin(currentUser, teamID)
 	}
 
@@ -174,16 +197,6 @@ func (p *Plugin) serveTeamFileList(basePath string, c *plugin.Context, w http.Re
 			Request: page,
 		}
 		helpers.ServeJSON(response, w)
-	}
-}
-
-// /files/extensions
-func (p *Plugin) serveExtensionList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
-	if extensions, err := p.dbService.GetAllExtensions(); err != nil {
-		p.API.LogError("Error occured in DbService.GetAllExtensions: " + err.Error())
-		w.WriteHeader(500)
-	} else {
-		helpers.ServeJSON(extensions, w)
 	}
 }
 

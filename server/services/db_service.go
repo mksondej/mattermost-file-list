@@ -218,9 +218,26 @@ func (s *DbService) IsTeamAdmin(userID, teamID string) bool {
 }
 
 // GetAllExtensions returns distinct list of all uploaded file extensions in alphabetic order
-func (s *DbService) GetAllExtensions() ([]string, error) {
-	sql := `SELECT DISTINCT Extension FROM FileInfo ORDER BY Extension ASC`
+func (s *DbService) GetAllExtensions(channelID string, teamID string) ([]string, error) {
+	sqlParams := make(map[string]interface{})
+	sql := `SELECT DISTINCT FileInfo.Extension
+		FROM FileInfo
+		JOIN Posts ON Posts.Id = FileInfo.PostId
+		`
+	if len(channelID) > 0 {
+		sql += `WHERE Posts.ChannelId = :ChannelId
+		`
+		sqlParams["ChannelId"] = channelID
+	} else if len(teamID) > 0 {
+		sql += `JOIN Channels ON Channels.Id = Posts.ChannelId
+		WHERE Channels.TeamId = :TeamId
+		`
+		sqlParams["TeamId"] = teamID
+	}
+
+	sql += `ORDER BY FileInfo.Extension ASC`
+
 	var extensions []string
-	_, err := s.Supplier.GetReplica().Select(&extensions, sql)
+	_, err := s.Supplier.GetReplica().Select(&extensions, sql, sqlParams)
 	return extensions, err
 }
