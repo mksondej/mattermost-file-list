@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// OrderDirection represents ascending or descending direction when sorting
 type OrderDirection byte
 
 const (
@@ -12,6 +13,7 @@ const (
 	DESCENDING
 )
 
+// ListPageRequest contains filters for querying lists
 type ListPageRequest struct {
 	Page           int
 	PageSize       int
@@ -19,6 +21,7 @@ type ListPageRequest struct {
 	OrderDirection OrderDirection
 	SearchQuery    string
 	SearchInverted bool
+	Extension      string
 }
 
 // FromQueryString initializes page request from query sting values
@@ -49,11 +52,13 @@ func (p *ListPageRequest) FromQueryString(q *url.Values, availableColumns []stri
 	if searchInverted, err := strconv.ParseBool(q.Get("SearchInverted")); err == nil {
 		p.SearchInverted = searchInverted
 	}
+
+	p.Extension = q.Get("Extension")
 }
 
 // IsValid validates input from the user
 func (p *ListPageRequest) IsValid() bool {
-	if(len(p.SearchQuery) > 0 && len(p.SearchQuery) < 3) {
+	if len(p.SearchQuery) > 0 && len(p.SearchQuery) < 3 {
 		return false
 	}
 

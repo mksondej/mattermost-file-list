@@ -6,6 +6,7 @@ import {
 import { connect } from "react-redux";
 import { getConfig as getConfigSelector } from "../selectors";
 import { openRootModal, getConfig as getConfigAction } from "../actions";
+import { isCurrentUserCurrentTeamAdmin } from "mattermost-redux/selectors/entities/teams";
 
 class TeamFilesButtons extends React.PureComponent {
     componentDidMount() {
@@ -39,6 +40,7 @@ class TeamFilesButtons extends React.PureComponent {
                 }
                 {
                     config.AdminTeamFilesEnabled &&
+                    this.props.isAdmin &&
                     <a
                         style={style.buttonHeader}
                         title="Team files (admin - all channels)"
@@ -76,7 +78,8 @@ const getStyle = makeStyleFromTheme(theme => {
 
 export default connect(
     state => ({
-        config: getConfigSelector(state)
+        config: getConfigSelector(state),
+        isAdmin: isCurrentUserCurrentTeamAdmin(state)
     }),
     dispatch => ({
         onGetConfig: () => dispatch(getConfigAction()),

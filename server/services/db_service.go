@@ -29,7 +29,8 @@ func (s *DbService) GetFileList(
 			FileInfo.CreateAt,
 			Posts.UserId as CreateByID,
 			FileInfo.Size,
-			Posts.Id as PostID
+			Posts.Id as PostID,
+			FileInfo.HasPreviewImage
 		`
 	if len(teamID) > 0 {
 		sql += `,Channels.DisplayName as ChannelName
@@ -87,6 +88,12 @@ func (s *DbService) GetFileList(
 		`
 
 		sqlParams["SearchQuery"] = "%" + page.SearchQuery + "%"
+	}
+
+	if len(page.Extension) > 0 {
+		sql += `AND FileInfo.Extension = :Extension
+		`
+		sqlParams["Extension"] = page.Extension
 	}
 
 	if len(page.OrderBy) > 0 {
@@ -173,6 +180,12 @@ func (s *DbService) GetTotalFilesCount(
 		sqlParams["SearchQuery"] = page.SearchQuery
 	}
 
+	if len(page.Extension) > 0 {
+		sql += `AND FileInfo.Extension = :Extension
+		`
+		sqlParams["Extension"] = page.Extension
+	}
+
 	//}
 
 	count, err := s.Supplier.GetReplica().SelectInt(sql, sqlParams)
@@ -202,4 +215,12 @@ func (s *DbService) IsChannelAdmin(userID, channelID string) bool {
 func (s *DbService) IsTeamAdmin(userID, teamID string) bool {
 	memberInfo, _ := s.Supplier.Team().GetMember(teamID, userID)
 	return memberInfo.SchemeAdmin
+}
+
+// GetAllExtensions returns distinct list of all uploaded file extensions in alphabetic order
+func (s *DbService) GetAllExtensions() ([]string, error) {
+	sql := `SELECT DISTINCT Extension FROM FileInfo ORDER BY Extension ASC`
+	var extensions []string
+	_, err := s.Supplier.GetReplica().Select(&extensions, sql)
+	return extensions, err
 }

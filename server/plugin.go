@@ -50,6 +50,7 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	handlers := [](func(c *plugin.Context, w http.ResponseWriter, r *http.Request) bool){
 		makeHandler("/files/channel", p.serveChannelFileList),
 		makeHandler("/files/team", p.serveTeamFileList),
+		makeHandler("/files/extensions", p.serveExtensionList),
 		makeHandler("/config", p.serveConfig),
 	}
 
@@ -173,6 +174,16 @@ func (p *Plugin) serveTeamFileList(basePath string, c *plugin.Context, w http.Re
 			Request: page,
 		}
 		helpers.ServeJSON(response, w)
+	}
+}
+
+// /files/extensions
+func (p *Plugin) serveExtensionList(basePath string, c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+	if extensions, err := p.dbService.GetAllExtensions(); err != nil {
+		p.API.LogError("Error occured in DbService.GetAllExtensions: " + err.Error())
+		w.WriteHeader(500)
+	} else {
+		helpers.ServeJSON(extensions, w)
 	}
 }
 

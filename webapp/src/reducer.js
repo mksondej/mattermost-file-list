@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 
-import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES, SET_ERROR, SET_CONFIG} from './action_types';
+import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL, LOAD_FILES, SET_ERROR, SET_CONFIG, LOAD_EXTENSIONS} from './action_types';
 
 const rootModalVisible = (state = false, action) => {
     switch (action.type) {
@@ -35,32 +35,19 @@ const isTeamModalForAdmin = (state = false, action) => {
     }
 }
 
-const files = (state = null, action) => {
+const getFromPayloadOfAction = (actionType) => (state = null, action) => {
     switch(action.type) {
-        case LOAD_FILES:
+        case actionType:
             return action.payload;
         default:
             return state;
     }
 }
 
-const error = (state = null, action) => {
-    switch(action.type) {
-        case SET_ERROR:
-            return action.payload;
-        default:
-            return state;
-    }
-}
-
-const config = (state = null, action) => {
-    switch(action.type) {
-        case SET_CONFIG:
-            return action.payload;
-        default:
-            return state;
-    }
-}
+const files = getFromPayloadOfAction(LOAD_FILES);
+const error = getFromPayloadOfAction(SET_ERROR);
+const config = getFromPayloadOfAction(SET_CONFIG);
+const extensions = getFromPayloadOfAction(LOAD_EXTENSIONS);
 
 export default combineReducers({
     rootModalVisible,
@@ -68,5 +55,6 @@ export default combineReducers({
     isTeamModalForAdmin,
     files,
     error,
-    config
+    config,
+    extensions
 });

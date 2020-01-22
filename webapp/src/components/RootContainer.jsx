@@ -5,14 +5,16 @@ import {
     closeRootModal,
     getFiles,
     deleteFile,
-    clearErrors
+    clearErrors,
+    getExtensions
 } from '../actions';
 
 import {
     isRootModalVisible,
     getLoadedFiles,
     getError,
-    isModalForTeam
+    isModalForTeam,
+    extensions
 } from '../selectors';
 
 import {
@@ -42,7 +44,8 @@ const mapStateToProps = (state) => ({
     currentChannelName: (getCurrentChannel(state) || empty).display_name,
     currentTeamName: (getCurrentTeam(state) || empty).name,
     error: getError(state),
-    arePublicLinksEnabled: getConfig(state).EnablePublicLink === 'true'
+    arePublicLinksEnabled: getConfig(state).EnablePublicLink === 'true',
+    extensions: extensions(state)
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -50,7 +53,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
     onGetFiles: getFiles,
     pushNotificationAlert,
     onDelete: deleteFile,
-    onOpen: clearErrors
+    onOpen: clearErrors,
+    onGetExtensions: getExtensions
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

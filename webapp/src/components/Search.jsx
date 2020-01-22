@@ -8,6 +8,7 @@ export default class Search extends Component {
         this.state = {
             query: "",
             queryInverted: false,
+            extension: "",
             dirty: false
         };
 
@@ -15,6 +16,11 @@ export default class Search extends Component {
         this.onInvertChange = this.onInvertChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.isValid = this.isValid.bind(this);
+        this.onExtensionChange = this.onExtensionChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.onGetExtensions();
     }
 
     onQueryChange(e) {
@@ -23,6 +29,10 @@ export default class Search extends Component {
 
     onInvertChange(e) {
         this.setState({ queryInverted: e.target.checked, dirty: true });
+    }
+
+    onExtensionChange(e) {
+        this.setState({ extension: e.target.value });
     }
 
     onSearch(e) {
@@ -34,7 +44,8 @@ export default class Search extends Component {
     }
 
     isValid() {
-        return this.state.query && this.state.query.length >= 3;
+        //no validation needed for now
+        return true;
     }
 
     render() {
@@ -47,11 +58,22 @@ export default class Search extends Component {
                         Name:
                     </Col>
                     <Col sm={8}>
-                        <FormControl type="text" placeholder="Min 3 characters" onChange={this.onQueryChange} value={this.state.query} />
+                        <FormControl type="text" placeholder="Type file name" onChange={this.onQueryChange} value={this.state.query} />
                         <Checkbox onChange={this.onInvertChange} checked={this.state.queryInverted}>Invert?</Checkbox>
                     </Col>
                     <Col sm={2}>
                         <Button bsStyle="primary" disabled={!isValid} onClick={this.onSearch}>Search</Button>
+                    </Col>
+                </FormGroup>
+                <FormGroup>
+                    <Col componentClass={ControlLabel} sm={2}>
+                        Extension:
+                    </Col>
+                    <Col sm={4}>
+                        <FormControl componentClass="select" onChange={this.onExtensionChange} value={this.state.extension}>
+                            <option value="">-All-</option>
+                            {this.props.extensions && this.props.extensions.map(x => <option value={x}>{x}</option>)}
+                        </FormControl>
                     </Col>
                 </FormGroup>
             </Form>

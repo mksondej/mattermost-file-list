@@ -2,7 +2,7 @@
     "id": "mattermost-file-list",
     "name": "File list",
     "description": "Adds a file list to each channel. (Button in top toolbar)",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "min_server_version": "5.16.0",
     "server": {
         "executables": {
@@ -23,7 +23,7 @@
             },
             {
                 "key": "AdminTeamFilesEnabled",
-                "display_name": "For admins enable enable a list of all files in the team, even from channels where the admin is not a member",
+                "display_name": "For admins enable a list of all files in the team, even from channels where the admin is not a member",
                 "type": "bool"
             }
         ]

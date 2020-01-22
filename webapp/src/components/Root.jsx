@@ -50,7 +50,8 @@ export default class Root extends React.Component {
         const newRequest = {
             ...this.props.currentRequest,
             SearchQuery: params.query,
-            SearchInverted: params.queryInverted
+            SearchInverted: params.queryInverted,
+            Extension: params.extension
         };
 
         this.props.onGetFiles(newRequest);
@@ -115,7 +116,7 @@ export default class Root extends React.Component {
             </style>
                 <Row>
                     <Col md={12}>
-                        <Search onSearch={this.onSearch} />
+                        <Search onSearch={this.onSearch} extensions={this.props.extensions} onGetExtensions={this.props.onGetExtensions} />
                     </Col>
                 </Row>
                 <Row>
@@ -129,6 +130,7 @@ export default class Root extends React.Component {
                         <Table hover bsClass="table file-list-table">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     {this.renderColumnHeader("FileName", "File")}
                                     {this.props.isModalForTeam && this.renderColumnHeader("ChannelName", "Channel")}
                                     {this.renderColumnHeader("CreateByName", "Uploaded by")}
@@ -142,6 +144,8 @@ export default class Root extends React.Component {
                                 && this.props.files.Items
                                 && this.props.files.Items.map(f =>
                                     <ListRow
+                                        arePreviewsEnabled
+                                        areThumbsEnabled
                                         isModalForTeam={this.props.isModalForTeam}
                                         currentTeamName={this.props.currentTeamName}
                                         file={f}

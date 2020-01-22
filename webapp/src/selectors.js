@@ -13,3 +13,5 @@ export const isModalForTeam = state => getPluginState(state).isModalForTeam;
 export const isTeamModalForAdmin = state => getPluginState(state).isTeamModalForAdmin;
 
 export const getConfig = (state) => getPluginState(state).config;
+
+export const extensions = (state) => getPluginState(state).extensions;

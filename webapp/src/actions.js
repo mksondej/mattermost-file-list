@@ -11,7 +11,8 @@ import {
     CLOSE_ROOT_MODAL,
     LOAD_FILES,
     SET_ERROR,
-    SET_CONFIG
+    SET_CONFIG,
+    LOAD_EXTENSIONS
 } from './action_types';
 import {
     getLoadedFiles,
@@ -115,6 +116,27 @@ export const deleteFile = (file) => async (dispatch, getState) => {
         dispatch(notifyError());
     }
 };
+
+export const getExtensions = () => async (dispatch, getState) => {
+    try {
+        const state = getState();
+        const baseUrl = getPluginServerRoute(state);
+
+        let url = baseUrl + "/files/extensions";
+
+        const response = await request.
+            get(url).
+            set(Client4.getOptions({}).headers).
+            accept('application/json');
+
+        dispatch({
+            type: LOAD_EXTENSIONS,
+            payload: response.body
+        });
+    } catch {
+        dispatch(notifyError());
+    }
+}
 
 export const clearErrors = () => setError(null);
 

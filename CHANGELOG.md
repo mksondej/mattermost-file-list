@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.8.0 - 2020-01-22
+### Added
+- Thumbnails and previews for image uploads
+- Filtering by extension
+
+### Fixed
+- Improved styling for action buttons
+- Fixed double "enable" in plugin settings
+- Admin list button hidden for non-admins (it was protected on the backend but still...)
+
 ## 0.7.0 - 2020-01-19
 ### Added
 - Added list of all files in the team. Also added an optional for admin list of all files even from channels where the admin is not a member. Both of those lists are opt-in: have to be enabled in plugin settings.

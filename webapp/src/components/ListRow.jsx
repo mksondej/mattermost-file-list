@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { epochMsToString } from "../utils/formatUtils";
-import { getFileUrl, getFormattedFileSize, getFileDownloadUrl } from "mattermost-redux/utils/file_utils";
+import { getFileUrl, getFormattedFileSize, getFileDownloadUrl, getFileThumbnailUrl, getFilePreviewUrl } from "mattermost-redux/utils/file_utils";
 import {Client4} from 'mattermost-redux/client';
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import { Button, ButtonToolbar } from "react-bootstrap";
 import {browserHistory} from 'mattermost-redux/utils/post_utils';
+import PreviewModal from "./PreviewModal";
 
 export default class ListRow extends React.PureComponent {
     constructor(props) {
@@ -13,6 +14,7 @@ export default class ListRow extends React.PureComponent {
 
         this.state = {
             showConfirmationModal: false,
+            showPreviewModal: false,
             link: null
         };
 
@@ -22,6 +24,8 @@ export default class ListRow extends React.PureComponent {
         this.onDeleteCancelled = this.onDeleteCancelled.bind(this);
         this.copyToClipboard = this.copyToClipboard.bind(this);
         this.onJumpToPost = this.onJumpToPost.bind(this);
+        this.onShowPreview = this.onShowPreview.bind(this);
+        this.onHidePreview = this.onHidePreview.bind(this);
     }
 
     copyToClipboard(inputRef) {
@@ -55,7 +59,6 @@ export default class ListRow extends React.PureComponent {
 
     onDelete() {
         this.setState({ showConfirmationModal: true });
-
     }
 
     onDeleteConfirmed() {
@@ -68,11 +71,28 @@ export default class ListRow extends React.PureComponent {
         this.setState({ showConfirmationModal: false });
     }
 
+    onShowPreview() {
+        this.setState({ showPreviewModal: true });
+    }
+
+    onHidePreview() {
+        this.setState({ showPreviewModal: false });
+    }
+
     render() {
         const f = this.props.file;
 
         return (
             <tr className="post">
+                {
+                    this.props.areThumbsEnabled &&
+                    <td>
+                        {
+                            f.HasPreviewImage &&
+                            <img src={getFileThumbnailUrl(f.ID)} />
+                        }
+                    </td>
+                }
                 <td><a href={getFileDownloadUrl(f.ID)}>{f.FileName}</a></td>
                 {
                     this.props.isModalForTeam &&
@@ -81,24 +101,35 @@ export default class ListRow extends React.PureComponent {
                 <td>{f.CreateByName}</td>
                 <td>{epochMsToString(f.CreateAt)}</td>
                 <td>{getFormattedFileSize({size: f.Size})}</td>
-                <td>
+                <td style={{ width: 190, display: "wrap", flexWrap: "wrap" }}>
                     <ButtonToolbar>
-                        <Button bsStyle="primary" bsSize="small" onClick={this.onJumpToPost} title="Jump to post">
+                        <Button style={{margin: 2}} bsStyle="primary" bsSize="small" onClick={this.onJumpToPost} title="Jump to post">
                             <span>Jump</span>
                         </Button>
                         {
+                            this.props.arePreviewsEnabled &&
+                            f.HasPreviewImage &&
+                            <Button style={{margin: 2}} bsStyle="primary" bsSize="small" onClick={this.onShowPreview} title="Preview">
+                                <i className="fa fa-search" style={{ marginRight: 0 }} />
+                            </Button>
+                        }
+                        {
                             this.props.arePublicLinksEnabled &&
-                            <Button bsStyle="primary" bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
+                            <Button style={{margin: 2}} bsStyle="primary" bsSize="small" onClick={this.onGetPublicLink} title="Copy external link">
                                 <i className="fa fa-external-link" style={{ marginRight: 0 }} />
                             </Button>
                         }
                         {
                             this.props.canDelete &&
-                            <Button bsStyle="danger" bsSize="small" onClick={this.onDelete} title="Delete">
+                            <Button style={{margin: 2}} bsStyle="danger" bsSize="small" onClick={this.onDelete} title="Delete">
                                 <i className="fa fa-times" style={{ marginRight: 0 }} />
                             </Button>
                         }
                     </ButtonToolbar>
+                    {
+                        this.state.showPreviewModal &&
+                        <PreviewModal show={this.state.showPreviewModal} previewUrl={getFilePreviewUrl(f.ID)} onClose={this.onHidePreview} />
+                    }
                     {
                         this.state.showConfirmationModal &&
                         <ConfirmDeleteModal file={f} onConfirm={this.onDeleteConfirmed} onCancel={this.onDeleteCancelled} />
@@ -115,6 +146,8 @@ export default class ListRow extends React.PureComponent {
 }
 
 ListRow.propTypes = {
+    areThumbsEnabled: PropTypes.bool,
+    arePreviewsEnabled: PropTypes.bool,
     currentTeamName: PropTypes.string,
     file: PropTypes.object,
     canDelete: PropTypes.bool,
