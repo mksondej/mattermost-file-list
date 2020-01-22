@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Extension filter now displays only those extensions which did appear in the current channel / team
 - Made root modal slightly bigger
+- Gave slightly more space to thumbnail
+- Click on thumbnail also opens preview
 
 ## 0.8.0 - 2020-01-22
 ### Added

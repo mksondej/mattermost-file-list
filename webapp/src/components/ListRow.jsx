@@ -86,10 +86,10 @@ export default class ListRow extends React.PureComponent {
             <tr className="post">
                 {
                     this.props.areThumbsEnabled &&
-                    <td>
+                    <td style={{width: "25%"}}>
                         {
                             f.HasPreviewImage &&
-                            <img src={getFileThumbnailUrl(f.ID)} />
+                            <img style={{cursor: "pointer"}} src={getFileThumbnailUrl(f.ID)} onClick={this.onShowPreview} />
                         }
                     </td>
                 }
