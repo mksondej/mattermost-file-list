@@ -1,7 +1,7 @@
 # Mattermost File List
 
 Adds a paged, searchable and sortable file list to each channel and team.
-You can open the cahnnel file  list through a button in the top panel.
+You can open the channel file list through a button in the top panel.
 The team file list is available above channel list, but it has to be first enabled in the plugin settings.
 Admins can additionally access a list of all files from all channels, even where they are not a member.
 
