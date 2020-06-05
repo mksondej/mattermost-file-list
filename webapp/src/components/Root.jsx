@@ -119,6 +119,9 @@ export default class Root extends React.Component {
                         color: ${theme.buttonColor};
                         background-color: ${theme.buttonBg};
                     }
+                    .file-list-table td {
+                        word-break: break-word;
+                    }
                 `}
             </style>
                 <Row>
