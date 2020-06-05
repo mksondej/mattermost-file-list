@@ -2,7 +2,7 @@
     "id": "mattermost-file-list",
     "name": "File list",
     "description": "Adds a file list to each channel. (Button in top toolbar)",
-    "version": "0.8.1",
+    "version": "0.9.0",
     "min_server_version": "5.16.0",
     "server": {
         "executables": {
