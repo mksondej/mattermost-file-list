@@ -158,7 +158,7 @@ export default class Root extends React.Component {
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan={5} align="center">
+                                    <td colSpan={6} align="center">
                                         {this.renderPages()}
                                     </td>
                                 </tr>
