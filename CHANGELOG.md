@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## 0.9.0 - TBD
+## 0.9.0 - 2020-06-05
 ### Added
 - "Case Insensitive" opt-in (needs to be enabled in plugin settings) searches. Usually not needed due to default Mattermost database collation which actually prevents the user from doing case sensitive searches.
 - Word-break in table columns for better readibility (thanks [@nopeslide](https://github.com/nopeslide)!)
@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed pager column span
 - Added dedicated error message when SiteURL is missing
 - Removed leftover minimum query length enforced by the backend
+- Removed unnecessary extra margin when team file lists are not enabled
 
 ## 0.8.1 - 2020-01-22
 ### Changed

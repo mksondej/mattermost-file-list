@@ -22,7 +22,11 @@ class TeamFilesButtons extends React.PureComponent {
             onOpenAdminTeamFiles
         } = this.props;
 
-        if (!config) return null;
+        if (
+            !config
+            || !(config.TeamFilesEnabled || config.AdminTeamFilesEnabled)
+        )
+            return null;
 
         const style = getStyle(theme);
 
