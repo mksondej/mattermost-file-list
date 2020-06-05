@@ -24,6 +24,7 @@ import { buildQueryString } from "mattermost-redux/utils/helpers";
 
 import request from 'superagent';
 import { getCurrentTeamId } from 'mattermost-redux/selectors/entities/teams';
+import { DisplayableError } from './utils/errors';
 
 export const getPluginServerRoute = (state) => {
     const config = getMattermostConfig(state);
@@ -35,6 +36,8 @@ export const getPluginServerRoute = (state) => {
         if (basePath && basePath[basePath.length - 1] === '/') {
             basePath = basePath.substr(0, basePath.length - 1);
         }
+    } else {
+        throw new DisplayableError("Site URL in System Console is not configured. Please notify the administrator.");
     }
 
     return basePath + '/plugins/' + pluginId;
@@ -99,8 +102,8 @@ export const getFiles = (pageRequest) => async (dispatch, getState) => {
             type: LOAD_FILES,
             payload: response.body
         });
-    } catch {
-        dispatch(notifyError());
+    } catch(ex) {
+        handleError(ex, dispatch);
     }
 };
 
@@ -112,8 +115,8 @@ export const deleteFile = (file) => async (dispatch, getState) => {
         const currentFiles = getLoadedFiles(state);
 
         dispatch(getFiles(currentFiles.Request));
-    } catch {
-        dispatch(notifyError());
+    } catch(ex) {
+        handleError(ex, dispatch);
     }
 };
 
@@ -141,15 +144,29 @@ export const getExtensions = () => async (dispatch, getState) => {
             type: LOAD_EXTENSIONS,
             payload: response.body
         });
-    } catch {
-        dispatch(notifyError());
+    } catch(ex) {
+        handleError(ex, dispatch);
     }
 }
 
 export const clearErrors = () => setError(null);
 
-function notifyError() {
-    return setError("An error occured in the File List plugin. Please notify the administrator. A detailed error message was added to the server log.");
+function handleError(ex, dispatch) {
+    if(ex instanceof DisplayableError) {
+        dispatch(notifyError(ex.message));
+    } else {
+        dispatch(notifyError());
+    }
+}
+
+/**
+ * @param {string} error custom message. If not provided a generic one will be displayed.
+ */
+function notifyError(error) {
+    return setError(
+        error ||
+        "An error occured in the File List plugin. Please notify the administrator. A detailed error message was added to the server log."
+    );
 }
 
 function setError(msg) {
