@@ -31,6 +31,7 @@ export const getPluginServerRoute = (state) => {
 
     let basePath = '/';
     if (config && config.SiteURL) {
+        Client4.setUrl(config.SiteURL);
         basePath = new URL(config.SiteURL).pathname;
 
         if (basePath && basePath[basePath.length - 1] === '/') {

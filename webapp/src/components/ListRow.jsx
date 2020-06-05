@@ -54,7 +54,7 @@ export default class ListRow extends React.PureComponent {
     onJumpToPost() {
         //that's how it's implemented in
         //https://github.com/mattermost/mattermost-webapp/blob/master/components/search_results_item/search_results_item.jsx#L175
-        window.location.assign(`/${this.props.currentTeamName}/pl/${this.props.file.PostID}`);
+        window.location.assign(`${Client4.getUrl()}/${this.props.currentTeamName}/pl/${this.props.file.PostID}`);
     }
 
     onDelete() {
