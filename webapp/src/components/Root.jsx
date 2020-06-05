@@ -24,6 +24,9 @@ export default class Root extends React.Component {
         if(this.props.visible) {
             this.props.onOpen();
             this.props.onGetFiles();
+
+            if(!this.props.config)
+                this.props.onGetConfig();
         }
     }
 
@@ -31,6 +34,9 @@ export default class Root extends React.Component {
         if(this.props.visible && !prevProps.visible) {
             this.props.onOpen();
             this.props.onGetFiles();
+
+            if(!this.props.config)
+                this.props.onGetConfig();
         }
     }
 
@@ -51,7 +57,8 @@ export default class Root extends React.Component {
             ...this.props.currentRequest,
             SearchQuery: params.query,
             SearchInverted: params.queryInverted,
-            Extension: params.extension
+            Extension: params.extension,
+            IsCaseInsensitive: params.caseInsensitive
         };
 
         this.props.onGetFiles(newRequest);
@@ -116,7 +123,12 @@ export default class Root extends React.Component {
             </style>
                 <Row>
                     <Col md={12}>
-                        <Search onSearch={this.onSearch} extensions={this.props.extensions} onGetExtensions={this.props.onGetExtensions} />
+                        <Search
+                            config={this.props.config}
+                            onSearch={this.onSearch}
+                            extensions={this.props.extensions}
+                            onGetExtensions={this.props.onGetExtensions}
+                        />
                     </Col>
                 </Row>
                 <Row>

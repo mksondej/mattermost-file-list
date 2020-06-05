@@ -32,6 +32,8 @@ import {
 import Root from './Root';
 import { getCurrentTeam } from 'mattermost-redux/selectors/entities/teams';
 import { getConfig } from 'mattermost-redux/selectors/entities/general';
+import { getConfig as getPluginConfigSelector } from "../selectors";
+import { getConfig as getPluginConfigAction } from "../actions";
 
 const empty = {};
 
@@ -45,7 +47,8 @@ const mapStateToProps = (state) => ({
     currentTeamName: (getCurrentTeam(state) || empty).name,
     error: getError(state),
     arePublicLinksEnabled: getConfig(state).EnablePublicLink === 'true',
-    extensions: extensions(state)
+    extensions: extensions(state),
+    config: getPluginConfigSelector(state)
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -54,7 +57,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
     pushNotificationAlert,
     onDelete: deleteFile,
     onOpen: clearErrors,
-    onGetExtensions: getExtensions
+    onGetExtensions: getExtensions,
+    onGetConfig: getPluginConfigAction
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

@@ -15,13 +15,14 @@ const (
 
 // ListPageRequest contains filters for querying lists
 type ListPageRequest struct {
-	Page           int
-	PageSize       int
-	OrderBy        string
-	OrderDirection OrderDirection
-	SearchQuery    string
-	SearchInverted bool
-	Extension      string
+	Page              int
+	PageSize          int
+	OrderBy           string
+	OrderDirection    OrderDirection
+	SearchQuery       string
+	SearchInverted    bool
+	IsCaseInsensitive bool
+	Extension         string
 }
 
 // FromQueryString initializes page request from query sting values
@@ -53,14 +54,14 @@ func (p *ListPageRequest) FromQueryString(q *url.Values, availableColumns []stri
 		p.SearchInverted = searchInverted
 	}
 
+	if caseInsensitive, err := strconv.ParseBool(q.Get("IsCaseInsensitive")); err == nil {
+		p.IsCaseInsensitive = caseInsensitive
+	}
+
 	p.Extension = q.Get("Extension")
 }
 
 // IsValid validates input from the user
 func (p *ListPageRequest) IsValid() bool {
-	if len(p.SearchQuery) > 0 && len(p.SearchQuery) < 3 {
-		return false
-	}
-
 	return true
 }

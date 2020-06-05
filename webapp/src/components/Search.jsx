@@ -9,11 +9,13 @@ export default class Search extends Component {
             query: "",
             queryInverted: false,
             extension: "",
-            dirty: false
+            dirty: false,
+            caseInsensitive: false
         };
 
         this.onQueryChange = this.onQueryChange.bind(this);
         this.onInvertChange = this.onInvertChange.bind(this);
+        this.onCaseInsensitiveChange = this.onCaseInsensitiveChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.isValid = this.isValid.bind(this);
         this.onExtensionChange = this.onExtensionChange.bind(this);
@@ -29,6 +31,10 @@ export default class Search extends Component {
 
     onInvertChange(e) {
         this.setState({ queryInverted: e.target.checked, dirty: true });
+    }
+
+    onCaseInsensitiveChange(e) {
+        this.setState({ caseInsensitive: e.target.checked });
     }
 
     onExtensionChange(e) {
@@ -60,6 +66,10 @@ export default class Search extends Component {
                     <Col sm={8}>
                         <FormControl type="text" placeholder="Type file name" onChange={this.onQueryChange} value={this.state.query} />
                         <Checkbox onChange={this.onInvertChange} checked={this.state.queryInverted}>Invert?</Checkbox>
+                        {
+                            this.props.config && this.props.config.CaseInsensitiveEnabled &&
+                            <Checkbox onChange={this.onCaseInsensitiveChange} checked={this.state.caseInsensitive}>Case insensitive</Checkbox>
+                        }
                     </Col>
                     <Col sm={2}>
                         <Button bsStyle="primary" disabled={!isValid} onClick={this.onSearch}>Search</Button>

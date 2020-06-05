@@ -1,6 +1,8 @@
 package services
 
 import (
+	"strings"
+
 	"github.com/Amonith/mattermost-file-list/models"
 	"github.com/mattermost/mattermost-server/store/sqlstore"
 )
@@ -79,15 +81,20 @@ func (s *DbService) GetFileList(
 	}
 
 	if len(page.SearchQuery) > 0 {
-		sql += "AND FileInfo.Name "
+		if page.IsCaseInsensitive {
+			sql += "AND UPPER(FileInfo.Name) "
+			sqlParams["SearchQuery"] = "%" + strings.ToUpper(page.SearchQuery) + "%"
+		} else {
+			sql += "AND FileInfo.Name "
+			sqlParams["SearchQuery"] = "%" + page.SearchQuery + "%"
+		}
+
 		if page.SearchInverted {
 			sql += "NOT "
 		}
 
 		sql += `LIKE :SearchQuery
 		`
-
-		sqlParams["SearchQuery"] = "%" + page.SearchQuery + "%"
 	}
 
 	if len(page.Extension) > 0 {
@@ -169,15 +176,20 @@ func (s *DbService) GetTotalFilesCount(
 	}
 
 	if len(page.SearchQuery) > 0 {
-		sql += "AND FileInfo.Name "
+		if page.IsCaseInsensitive {
+			sql += "AND UPPER(FileInfo.Name) "
+			sqlParams["SearchQuery"] = "%" + strings.ToUpper(page.SearchQuery) + "%"
+		} else {
+			sql += "AND FileInfo.Name "
+			sqlParams["SearchQuery"] = "%" + page.SearchQuery + "%"
+		}
+
 		if page.SearchInverted {
 			sql += "NOT "
 		}
 
-		sql += `LIKE '%' + :SearchQuery + '%'
+		sql += `LIKE :SearchQuery
 		`
-
-		sqlParams["SearchQuery"] = page.SearchQuery
 	}
 
 	if len(page.Extension) > 0 {

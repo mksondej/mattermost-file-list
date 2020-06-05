@@ -5,9 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## 0.9.0 - TBD
+### Added
+- "Case Insensitive" opt-in (needs to be enabled in plugin settings) searches. Usually not needed due to default Mattermost database collation which actually prevents the user from doing case sensitive searches.
 ### Fixed
 - Fixed pager column span
 - Added dedicated error message when SiteURL is missing
+- Removed leftover minimum query length enforced by the backend
 
 ## 0.8.1 - 2020-01-22
 ### Changed

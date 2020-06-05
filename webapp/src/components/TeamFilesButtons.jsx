@@ -10,7 +10,8 @@ import { isCurrentUserCurrentTeamAdmin } from "mattermost-redux/selectors/entiti
 
 class TeamFilesButtons extends React.PureComponent {
     componentDidMount() {
-        this.props.onGetConfig();
+        if(!this.props.config)
+            this.props.onGetConfig();
     }
 
     render() {

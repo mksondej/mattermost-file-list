@@ -25,6 +25,12 @@
                 "key": "AdminTeamFilesEnabled",
                 "display_name": "For admins enable a list of all files in the team, even from channels where the admin is not a member",
                 "type": "bool"
+            },
+            {
+                "key": "CaseInsensitiveEnabled",
+                "display_name": "Enable \"Case Insensitive\" checkbox in search dialog.",
+                "type": "bool",
+                "help_text": "Actually not required in default Mattermost config as you actually can't perform a case sensitive search due to database collation. So turn it on only if your file storage actually supports case sensitive searches."
             }
         ]
     }
