@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## 0.9.0 - TBD
 ### Added
 - "Case Insensitive" opt-in (needs to be enabled in plugin settings) searches. Usually not needed due to default Mattermost database collation which actually prevents the user from doing case sensitive searches.
-- Word-break in table columns for better readibility (thanks @nopeslide!)
+- Word-break in table columns for better readibility (thanks [@nopeslide](https://github.com/nopeslide)!)
 ### Fixed
+- Fixed wrong urls if MM is hosted on a subpath (thanks [@emi80](https://github.com/emi80)!)
 - Fixed pager column span
 - Added dedicated error message when SiteURL is missing
 - Removed leftover minimum query length enforced by the backend
