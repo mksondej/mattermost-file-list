@@ -26,3 +26,13 @@ The container caches entire GOPATH inside `.docker_cache` directory, so it shoul
 Have fun :)
 
 Optionally you can also pass `-withPreview` which will spin up the mattermost-preview instance (if it's not running) and deploy the plugin to it.
+
+## Troubleshooting
+
+### 1. Error uploading plugin
+
+If you are using a suported platform, can upload other plugins but still receive an error trying to upload this one, check the Maximum File Size setting in Mattermost's configuration as mentioned in:
+
+https://github.com/blindsidenetworks/mattermost-plugin-bigbluebutton/issues/101#issuecomment-643446448
+
+Thanks [@bbodenmiller](https://github.com/bbodenmillerr) for this find :)
