@@ -1,5 +1,19 @@
 # Mattermost File List
 
+> Hi there!,
+>
+> I'm glad that my project piqued your attention but I have to be honest:
+>
+> Since version 5.35.0 of Mattermost, an official file list functionality is already built-in.
+> Because of that, this plugin doesn't really make sense anymore, so I'd recommend not installing it and just updating your server to the latest version.
+> Maybe I'll think of some additional useful features in the future, but I don't have an opportunity to work with Mattermost very often, so it may take some time.
+> 
+> I appreciate all of the stars on Github, I really do.
+>
+> Cheers,
+>
+> Mike, the dev
+
 Adds a paged, searchable and sortable file list to each channel and team.
 You can open the channel file list through a button in the top panel.
 The team file list is available above channel list, but it has to be first enabled in the plugin settings.
